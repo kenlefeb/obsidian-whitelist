@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.0",
+	"id": "obsidian-whitelist",
+	"name": "Plugin Whitelist",
+	"version": "1.0.0-beta",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Enforces a whitelist of allowed plugins in Obsidian. Only plugins with IDs specified in the whitelist will be allowed to run.",
+	"author": "Ken LeFebvre",
+	"authorUrl": "https://blacksmithpress.com",
+	"fundingUrl": "https://blacksmithpress.com/pricing",
 	"isDesktopOnly": false
 }

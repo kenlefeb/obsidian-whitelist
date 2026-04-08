@@ -1,0 +1,17 @@
+{
+  "file_hashes": {
+    "esbuild.config.mjs": "5b28c4c07bd7a85bcc7444970acd94090fd976c20a95b1935d8a29b047b53c0e",
+    "src/main.ts": "3b5ce66245ed944b5d7d892c20f43708e291945afae1ae79c2653c45a86fdef8",
+    "src/settings.ts": "9b4dc378f9a83b3bf22896929672f47c6ba040438a16020b646737e0e432f500",
+    "version-bump.mjs": "1a9ed4143e587d68513a825a0b933ac1a66af453fe995be5c0e9313e560f6747"
+  },
+  "indexed_at_commit": "6f4fc592f039d65d7567f547f4ace6056b8d422f",
+  "indexed_at_timestamp": "2026-04-08T17:58:12.723916+00:00",
+  "schema_version": 3,
+  "stats": {
+    "total_edges": 12,
+    "total_files": 4,
+    "total_nodes": 13
+  },
+  "vexp_version": "1.2.29"
+}
