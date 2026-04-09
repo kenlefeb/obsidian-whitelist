@@ -108,8 +108,8 @@ export function removePluginId(list: string[], id: string): string[] {
 	return list.filter((item) => item !== id);
 }
 
-// AICODE-NOTE: IMPL-006/007 implements [FR-003, FR-005, UX-001, UX-002, UX-003]
-// WhitelistSettingTab rebuilt with whitelist section, add/remove pattern.
+// AICODE-NOTE: IMPL-006/007/008 implements [FR-003, FR-005, UX-001, UX-002, UX-003]
+// WhitelistSettingTab rebuilt with whitelist + blacklist sections, add/remove pattern.
 export class WhitelistSettingTab extends PluginSettingTab {
 	plugin: WhitelistPlugin;
 
@@ -123,51 +123,75 @@ export class WhitelistSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		// --- Whitelist Section ---
-		containerEl.createEl("h3", { text: "Whitelist" });
+		this.renderListSection(
+			containerEl,
+			"Whitelist",
+			"Add plugin to whitelist",
+			"Enter a community plugin ID to approve",
+			"whitelist",
+			"blacklist",
+		);
 
-		let whitelistInput = "";
-		const whitelistErrorEl = containerEl.createEl("div", {
-			cls: "setting-error",
-		});
+		// --- Blacklist Section (IMPL-008) ---
+		this.renderListSection(
+			containerEl,
+			"Blacklist",
+			"Add plugin to blacklist",
+			"Enter a community plugin ID to block",
+			"blacklist",
+			"whitelist",
+		);
+	}
 
-		new Setting(containerEl)
-			.setName("Add plugin to whitelist")
-			.setDesc("Enter a community plugin ID to approve")
+	/**
+	 * Renders a complete list management section: heading, input, button, entries.
+	 */
+	private renderListSection(
+		container: HTMLElement,
+		heading: string,
+		inputName: string,
+		inputDesc: string,
+		listName: "whitelist" | "blacklist",
+		otherListName: "whitelist" | "blacklist",
+	): void {
+		container.createEl("h3", { text: heading });
+
+		let inputValue = "";
+		const errorEl = container.createEl("div", { cls: "setting-error" });
+
+		new Setting(container)
+			.setName(inputName)
+			.setDesc(inputDesc)
 			.addText((text) => {
 				text.setPlaceholder("e.g., dataview");
 				text.onChange((value) => {
-					whitelistInput = value;
+					inputValue = value;
 				});
 			})
 			.addButton((btn) => {
 				btn.setButtonText("Add");
 				btn.onClick(() => {
 					const result = addPluginId(
-						this.plugin.settings.whitelist,
-						whitelistInput,
-						this.plugin.settings.blacklist,
+						this.plugin.settings[listName],
+						inputValue,
+						this.plugin.settings[otherListName],
 					);
 					if (result.error) {
-						whitelistErrorEl.setText(result.error);
+						errorEl.setText(result.error);
 					} else {
-						whitelistErrorEl.setText("");
-						this.plugin.settings.whitelist = result.list;
+						errorEl.setText("");
+						this.plugin.settings[listName] = result.list;
 						this.plugin.saveSettings();
 						this.display();
 					}
 				});
 			});
 
-		this.renderPluginList(
-			containerEl,
-			this.plugin.settings.whitelist,
-			"whitelist",
-		);
+		this.renderPluginList(container, this.plugin.settings[listName], listName);
 	}
 
 	/**
 	 * Renders a list of plugin IDs with trash buttons for removal.
-	 * Clears and rebuilds on each call.
 	 */
 	private renderPluginList(
 		container: HTMLElement,

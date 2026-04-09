@@ -89,6 +89,15 @@ describe("WhitelistSettings", () => {
 			expect(result.error).toBeUndefined();
 			expect(result.list).toEqual(["existing-plugin", "dataview"]);
 		});
+
+		// AICODE-NOTE: TEST-009 tests [FR-006] - add to blacklist (same function, blacklist context)
+		it("TEST-009: adds valid ID to blacklist array", () => {
+			const blacklist = ["malicious-plugin"];
+			const whitelist = ["dataview"];
+			const result = addPluginId(blacklist, "sketchy-tool", whitelist);
+			expect(result.error).toBeUndefined();
+			expect(result.list).toEqual(["malicious-plugin", "sketchy-tool"]);
+		});
 	});
 
 	describe("removePluginId", () => {
@@ -99,6 +108,15 @@ describe("WhitelistSettings", () => {
 				"obsidian-git"
 			);
 			expect(result).toEqual(["dataview", "templater"]);
+		});
+
+		// AICODE-NOTE: TEST-010 tests [FR-006] - remove from blacklist
+		it("TEST-010: removes ID from blacklist array", () => {
+			const result = removePluginId(
+				["malicious-plugin", "sketchy-tool"],
+				"malicious-plugin"
+			);
+			expect(result).toEqual(["sketchy-tool"]);
 		});
 	});
 
