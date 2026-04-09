@@ -133,7 +133,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - [ ] TEST-010 [US1] Test that `runComplianceScan` is callable with WhitelistSettings and returns valid ComplianceResult type in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-010 [US1] Integrate `runComplianceScan()` into `WhitelistPlugin.onload()` in `src/main.ts`: call after loadSettings inside `onLayoutReady`, store result on plugin instance for downstream features
+- [x] IMPL-010 [US1] Integrate `runComplianceScan()` into `WhitelistPlugin.onload()` in `src/main.ts`: call after loadSettings inside `onLayoutReady`, store result on plugin instance for downstream features
 
 ## Execution Order
 

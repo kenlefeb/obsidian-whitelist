@@ -62,10 +62,11 @@ export function runComplianceScan(
 	if (settings.blacklist.length > 0) {
 		for (const id of pluginIds) {
 			if (settings.blacklist.includes(id)) {
+				const manifest = manifests[id];
 				blacklisted.add(id);
 				violations.push({
 					pluginId: id,
-					pluginName: manifests[id].name,
+					pluginName: manifest?.name ?? id,
 					reason: "on_blacklist",
 				});
 			}
@@ -77,9 +78,10 @@ export function runComplianceScan(
 	if (settings.whitelist.length > 0) {
 		for (const id of pluginIds) {
 			if (!blacklisted.has(id) && !settings.whitelist.includes(id)) {
+				const manifest = manifests[id];
 				violations.push({
 					pluginId: id,
-					pluginName: manifests[id].name,
+					pluginName: manifest?.name ?? id,
 					reason: "not_on_whitelist",
 				});
 			}
