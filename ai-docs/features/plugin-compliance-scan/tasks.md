@@ -71,7 +71,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - Requirements: FR-003, FR-006
 
 #### RED Phase
-- [ ] TEST-005 [US5] Test that only whitelist enforcement applies when whitelist has entries and blacklist is empty in `tests/unit/compliance.test.ts`
+- [x] TEST-005 [US5] Test that only whitelist enforcement applies when whitelist has entries and blacklist is empty in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
 - [ ] IMPL-005 [US5] Ensure blacklist check is skipped when blacklist is empty in `src/compliance.ts`

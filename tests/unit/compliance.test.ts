@@ -139,4 +139,139 @@ describe("runComplianceScan", () => {
 			expect(result.violations).toHaveLength(0);
 		});
 	});
+
+	// AICODE-NOTE: TEST-005 tests [FR-003, FR-006] - whitelist-only enforcement
+	describe("US5: Whitelist-Only Enforcement", () => {
+		it("TEST-005: only whitelist enforced when blacklist empty", () => {
+			const settings = makeSettings({
+				whitelist: ["pluginA"],
+				// blacklist empty by default
+			});
+			const manifests = makeManifests("pluginA", "pluginB");
+
+			const result = runComplianceScan(settings, manifests, SELF_ID);
+
+			expect(result.compliant).toBe(false);
+			expect(result.violations).toHaveLength(1);
+			expect(result.violations[0]).toEqual({
+				pluginId: "pluginB",
+				pluginName: "Plugin pluginB",
+				reason: "not_on_whitelist",
+			});
+			// Verify no on_blacklist violations appear
+			const blacklistViolations = result.violations.filter(
+				(v) => v.reason === "on_blacklist",
+			);
+			expect(blacklistViolations).toHaveLength(0);
+		});
+	});
+
+	// AICODE-NOTE: TEST-006 tests [FR-004, FR-006] - blacklist-only enforcement
+	describe("US6: Blacklist-Only Enforcement", () => {
+		it("TEST-006: only blacklist enforced when whitelist empty", () => {
+			const settings = makeSettings({
+				blacklist: ["pluginX"],
+				// whitelist empty by default
+			});
+			const manifests = makeManifests("pluginA", "pluginB", "pluginX");
+
+			const result = runComplianceScan(settings, manifests, SELF_ID);
+
+			expect(result.compliant).toBe(false);
+			// Only pluginX should be flagged; pluginA and pluginB are fine
+			// because no whitelist is enforced
+			expect(result.violations).toHaveLength(1);
+			expect(result.violations[0]).toEqual({
+				pluginId: "pluginX",
+				pluginName: "Plugin pluginX",
+				reason: "on_blacklist",
+			});
+			// Verify no not_on_whitelist violations appear
+			const whitelistViolations = result.violations.filter(
+				(v) => v.reason === "not_on_whitelist",
+			);
+			expect(whitelistViolations).toHaveLength(0);
+		});
+	});
+
+	// AICODE-NOTE: TEST-007 tests [FR-007] - empty manifests returns compliant
+	describe("US7: No Plugins Installed", () => {
+		it("TEST-007: empty manifests returns compliant with no violations", () => {
+			const settings = makeSettings({
+				whitelist: ["pluginA"],
+				blacklist: ["pluginX"],
+			});
+			const manifests = {}; // No plugins installed
+
+			const result = runComplianceScan(settings, manifests, SELF_ID);
+
+			expect(result.compliant).toBe(true);
+			expect(result.violations).toHaveLength(0);
+		});
+	});
+
+	// AICODE-NOTE: TEST-008 tests [FR-001] - self-exclusion
+	describe("Edge Cases", () => {
+		it("TEST-008: whitelist plugin itself is excluded from compliance checking", () => {
+			const settings = makeSettings({
+				whitelist: ["pluginA"],
+			});
+			// Include self in manifests -- should be excluded from checking
+			const manifests = makeManifests("pluginA", SELF_ID);
+
+			const result = runComplianceScan(settings, manifests, SELF_ID);
+
+			// Self should NOT appear as violation even though it's not on whitelist
+			expect(result.compliant).toBe(true);
+			expect(result.violations).toHaveLength(0);
+		});
+
+		// AICODE-NOTE: TEST-009 tests [FR-002] - installed-but-disabled checked
+		it("TEST-009: installed-but-disabled plugins are checked against lists", () => {
+			// The function receives manifests (all installed), not enabledPlugins
+			// This test verifies the function checks ALL manifests passed to it
+			const settings = makeSettings({
+				whitelist: ["pluginA"],
+			});
+			// pluginB represents an installed-but-disabled plugin
+			// It appears in manifests because manifests = all installed
+			const manifests = makeManifests("pluginA", "pluginB");
+
+			const result = runComplianceScan(settings, manifests, SELF_ID);
+
+			expect(result.compliant).toBe(false);
+			expect(result.violations).toHaveLength(1);
+			expect(result.violations[0].pluginId).toBe("pluginB");
+		});
+
+		// AICODE-NOTE: TEST-010 tests [FR-008] - callable with WhitelistSettings, returns ComplianceResult
+		it("TEST-010: callable with WhitelistSettings and returns valid ComplianceResult", () => {
+			const settings: WhitelistSettings = {
+				whitelist: ["pluginA"],
+				blacklist: ["pluginX"],
+				notificationDirectory: ".obsidian-whitelist/notifications/",
+				showCompliantIndicator: true,
+			};
+			const manifests = makeManifests("pluginA", "pluginB", "pluginX");
+
+			const result: ComplianceResult = runComplianceScan(
+				settings,
+				manifests,
+				SELF_ID,
+			);
+
+			// Verify return type shape
+			expect(typeof result.compliant).toBe("boolean");
+			expect(Array.isArray(result.violations)).toBe(true);
+			// Verify violations have correct shape
+			for (const v of result.violations) {
+				expect(typeof v.pluginId).toBe("string");
+				expect(typeof v.pluginName).toBe("string");
+				expect(["not_on_whitelist", "on_blacklist"]).toContain(v.reason);
+			}
+			// Verify actual results: pluginX on_blacklist, pluginB not_on_whitelist
+			expect(result.compliant).toBe(false);
+			expect(result.violations).toHaveLength(2);
+		});
+	});
 });
