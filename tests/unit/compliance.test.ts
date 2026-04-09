@@ -100,7 +100,6 @@ describe("runComplianceScan", () => {
 			const result = runComplianceScan(settings, manifests, SELF_ID);
 
 			expect(result.compliant).toBe(false);
-			// Must be exactly 1 violation, not 2 (no double-flagging)
 			expect(result.violations).toHaveLength(1);
 			expect(result.violations[0]).toEqual({
 				pluginId: "pluginA",
@@ -110,8 +109,6 @@ describe("runComplianceScan", () => {
 		});
 
 		it("TEST-003b: blacklisted plugin not on whitelist gets only 'on_blacklist'", () => {
-			// pluginX is on blacklist but NOT on whitelist
-			// Should get only on_blacklist, not both on_blacklist AND not_on_whitelist
 			const settings = makeSettings({
 				whitelist: ["pluginA"],
 				blacklist: ["pluginX"],
@@ -127,6 +124,19 @@ describe("runComplianceScan", () => {
 				pluginName: "Plugin pluginX",
 				reason: "on_blacklist",
 			});
+		});
+	});
+
+	// AICODE-NOTE: TEST-004 tests [FR-006, FR-007] - no enforcement when lists empty
+	describe("US4: No Enforcement When Lists Empty", () => {
+		it("TEST-004: empty whitelist and empty blacklist returns compliant with plugins present", () => {
+			const settings = makeSettings(); // both lists empty
+			const manifests = makeManifests("pluginA", "pluginB", "pluginC");
+
+			const result = runComplianceScan(settings, manifests, SELF_ID);
+
+			expect(result.compliant).toBe(true);
+			expect(result.violations).toHaveLength(0);
 		});
 	});
 });

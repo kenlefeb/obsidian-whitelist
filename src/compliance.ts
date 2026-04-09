@@ -40,13 +40,18 @@ export interface ComplianceResult {
 // AICODE-NOTE: IMPL-001 implements [FR-001, FR-003, FR-007] - whitelist check logic
 // AICODE-NOTE: IMPL-002 implements [FR-004] - blacklist check logic
 // AICODE-NOTE: IMPL-003 implements [FR-005] - blacklist precedence, skip whitelist check for blacklisted plugins
+// AICODE-NOTE: IMPL-004 implements [FR-006] - early return when both lists empty
 export function runComplianceScan(
 	settings: WhitelistSettings,
 	manifests: Record<string, { id: string; name: string }>,
 	selfId: string,
 ): ComplianceResult {
-	const violations: Violation[] = [];
+	// Early return when no enforcement configured (FR-006)
+	if (settings.whitelist.length === 0 && settings.blacklist.length === 0) {
+		return { compliant: true, violations: [] };
+	}
 
+	const violations: Violation[] = [];
 	const pluginIds = Object.keys(manifests).filter((id) => id !== selfId);
 
 	// Track blacklisted plugins to avoid double-flagging (FR-005)

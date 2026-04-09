@@ -59,7 +59,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - States: scanning → complete_compliant
 
 #### RED Phase
-- [ ] TEST-004 [US4] Test that empty whitelist and empty blacklist returns compliant with no violations in `tests/unit/compliance.test.ts`
+- [x] TEST-004 [US4] Test that empty whitelist and empty blacklist returns compliant with no violations in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
 - [ ] IMPL-004 [US4] Add early return in `runComplianceScan()` when both lists empty in `src/compliance.ts`
