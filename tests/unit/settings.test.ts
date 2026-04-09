@@ -167,17 +167,12 @@ describe("WhitelistSettings", () => {
 		});
 	});
 
-	describe("validatePluginId - obsidian word check", () => {
-		// AICODE-NOTE: TEST-017 tests [CHK032] - IDs containing "obsidian" rejected
-		it("TEST-017: rejects IDs containing the word 'obsidian'", () => {
-			const error1 = validatePluginId("my-obsidian-plugin", [], []);
-			expect(error1).not.toBeNull();
-
-			const error2 = validatePluginId("Obsidian-Tools", [], []);
-			expect(error2).not.toBeNull();
-
-			const error3 = validatePluginId("obsidiantools", [], []);
-			expect(error3).not.toBeNull();
+	describe("validatePluginId - obsidian word in IDs", () => {
+		// Some real plugins use "obsidian" in their ID, so we must allow it
+		it("TEST-017: allows IDs containing the word 'obsidian'", () => {
+			expect(validatePluginId("my-obsidian-plugin", [], [])).toBeNull();
+			expect(validatePluginId("Obsidian-Tools", [], [])).toBeNull();
+			expect(validatePluginId("obsidiantools", [], [])).toBeNull();
 		});
 	});
 

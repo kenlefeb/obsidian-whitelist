@@ -66,7 +66,6 @@ export function mergeSettings(
 
 // AICODE-NOTE: IMPL-003 implements [FR-006] - validate plugin ID before add
 // AICODE-NOTE: IMPL-012 adds cross-list check per CHK009
-// AICODE-NOTE: IMPL-013 adds "obsidian" word rejection per CHK032
 /**
  * Validates a plugin ID before adding to a list.
  * Returns error message string if invalid, null if valid.
@@ -87,10 +86,6 @@ export function validatePluginId(
 	// CHK009: cross-list duplicate rejection
 	if (otherList.includes(trimmed)) {
 		return `"${trimmed}" is already in the other list`;
-	}
-	// CHK032: reject IDs containing "obsidian" per Obsidian manifest rules
-	if (trimmed.toLowerCase().includes("obsidian")) {
-		return `Plugin IDs must not contain the word "obsidian"`;
 	}
 	return null;
 }
