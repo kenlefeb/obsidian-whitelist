@@ -32,6 +32,20 @@ export class App {
 	vault = {
 		getName: () => "test-vault",
 	};
+
+	// AICODE-NOTE: IMPL-010 - workspace mock with onLayoutReady for compliance scan integration
+	workspace = {
+		onLayoutReady: (callback: () => void) => {
+			// Execute callback immediately in tests
+			callback();
+		},
+	};
+
+	// AICODE-NOTE: IMPL-010 - plugins mock for compliance scan integration
+	plugins = {
+		manifests: {} as Record<string, { id: string; name: string }>,
+		enabledPlugins: new Set<string>(),
+	};
 }
 
 export class PluginSettingTab {
