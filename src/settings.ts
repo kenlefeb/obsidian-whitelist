@@ -1,25 +1,39 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import WhitelistPlugin from "./main";
+import WhitelistPlugin from "./main.js";
+
+// AICODE-NOTE: WhitelistSettings refactored per data-model.md.
+// Fields renamed: allowed→whitelist, prohibited→blacklist.
+// EnforcementMode enum removed per research.md — enforcement driven by list presence.
+// New fields: notificationDirectory, showCompliantIndicator.
 
 export interface WhitelistSettings {
-	mode: EnforcementMode;
-	allowed: string[];
-	prohibited: string[];
+	whitelist: string[];
+	blacklist: string[];
+	notificationDirectory: string;
+	showCompliantIndicator: boolean;
 }
 
-enum EnforcementMode {
-	Strict = "strict",
-	Lax = "lax",
-	Warn = "warn",
-	Off = "off",
-}
+/** Default notification directory path within vault */
+export const DEFAULT_NOTIFICATION_DIR = ".obsidian-whitelist/notifications/";
+
+/** Whether to show status bar indicator when all plugins are compliant */
+export const DEFAULT_SHOW_COMPLIANT = false;
+
+/** Default whitelist — empty, no plugins pre-approved */
+export const DEFAULT_WHITELIST: string[] = [];
+
+/** Default blacklist — empty, no plugins pre-blocked */
+export const DEFAULT_BLACKLIST: string[] = [];
 
 export const DEFAULT_SETTINGS: WhitelistSettings = {
-	mode: EnforcementMode.Warn,
-	allowed: ["obsidian-whitelist", "obsidian-objects"],
-	prohibited: ["obsidian-tasks-plugin"],
+	whitelist: [...DEFAULT_WHITELIST],
+	blacklist: [...DEFAULT_BLACKLIST],
+	notificationDirectory: DEFAULT_NOTIFICATION_DIR,
+	showCompliantIndicator: DEFAULT_SHOW_COMPLIANT,
 };
 
+// AICODE-TODO: WhitelistSettingTab.display() will be rebuilt in Phase 2+ TDD cycles.
+// Current display() is a minimal placeholder after removing EnforcementMode UI.
 export class WhitelistSettingTab extends PluginSettingTab {
 	plugin: WhitelistPlugin;
 
@@ -29,67 +43,14 @@ export class WhitelistSettingTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		const { containerEl: theContainer } = this;
+		const { containerEl } = this;
+		containerEl.empty();
 
-		theContainer.empty();
-
-		new Setting(theContainer)
-			.setName("Enforcement mode")
-			.setDesc("Select the enforcement mode for the whitelist")
-			.addDropdown((dropdown) =>
-				dropdown
-					.addOption(EnforcementMode.Strict, "Strict")
-					.addOption(EnforcementMode.Lax, "Lax")
-					.addOption(EnforcementMode.Warn, "Warn")
-					.addOption(EnforcementMode.Off, "Off")
-					.setValue(this.plugin.settings.mode)
-					.onChange(async (value) => {
-						this.plugin.settings.mode = value as EnforcementMode;
-						await this.plugin.saveSettings();
-					}),
-			);
-
-		new Setting(theContainer)
-			.setName("Allowed plugins")
-			.setDesc("List of allowed plugins (comma-separated)")
-			.addTextArea((text) =>
-				text
-					.setPlaceholder("obsidian-whitelist, obsidian-objects")
-					.setValue(this.plugin.settings.allowed.join(", "))
-					.onChange(async (value) => {
-						this.plugin.settings.allowed = value
-							.split(",")
-							.map((s) => s.trim());
-						await this.plugin.saveSettings();
-					}),
-			);
-
-		new Setting(theContainer)
-			.setName("Prohibited plugins")
-			.setDesc("List of prohibited plugins (comma-separated)")
-			.addTextArea((text) =>
-				text
-					.setPlaceholder("obsidian-tasks-plugin")
-					.setValue(this.plugin.settings.prohibited.join(", "))
-					.onChange(async (value) => {
-						this.plugin.settings.prohibited = value
-							.split(",")
-							.map((s) => s.trim());
-						await this.plugin.saveSettings();
-					}),
-			);
-
-		new Setting(theContainer)
-			.setName("Enforce")
-			.setDesc("Enforce the current whitelist settings immediately")
-			.addButton((button) =>
-				button
-					.setButtonText("Enforce Now")
-					.setWarning()
-					.onClick(async () => {
-						await this.plugin.enforce();
-						this.display();
-					}),
+		new Setting(containerEl)
+			.setName("Plugin settings")
+			.setDesc(
+				"Configure whitelist, blacklist, and notification preferences. " +
+				"Full UI coming in next iteration."
 			);
 	}
 }

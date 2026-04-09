@@ -1,0 +1,71 @@
+/**
+ * AICODE-NOTE: Mock of Obsidian API for Vitest.
+ * Only mocks the classes/interfaces used by settings.ts and main.ts.
+ * Vitest alias in vitest.config.ts maps "obsidian" imports to this file.
+ */
+
+export class Plugin {
+	app: App;
+	manifest: { id: string; name: string; version: string };
+
+	constructor() {
+		this.app = new App();
+		this.manifest = { id: "obsidian-whitelist", name: "Whitelist", version: "1.0.0" };
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	addSettingTab(_tab: PluginSettingTab): void {}
+
+	addStatusBarItem(): { setText: (text: string) => void } {
+		return { setText: () => {} };
+	}
+
+	async loadData(): Promise<unknown> {
+		return null;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	async saveData(_data: unknown): Promise<void> {}
+}
+
+export class App {
+	vault = {
+		getName: () => "test-vault",
+	};
+}
+
+export class PluginSettingTab {
+	app: App;
+	plugin: Plugin;
+	containerEl: HTMLElement;
+
+	constructor(app: App, plugin: Plugin) {
+		this.app = app;
+		this.plugin = plugin;
+		// AICODE-NOTE: In test environment, containerEl is a minimal stub.
+		// Full DOM testing of settings UI requires JSDOM or manual verification.
+		this.containerEl = {
+			empty: () => {},
+			createEl: () => ({}),
+			createDiv: () => ({}),
+		} as unknown as HTMLElement;
+	}
+}
+
+export class Setting {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	constructor(_containerEl: HTMLElement) {}
+
+	setName(): this { return this; }
+	setDesc(): this { return this; }
+	addText(): this { return this; }
+	addTextArea(): this { return this; }
+	addToggle(): this { return this; }
+	addButton(): this { return this; }
+	addDropdown(): this { return this; }
+}
+
+export class Notice {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	constructor(_message: string, _timeout?: number) {}
+}

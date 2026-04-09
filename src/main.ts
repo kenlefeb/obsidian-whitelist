@@ -3,27 +3,17 @@ import {
 	DEFAULT_SETTINGS,
 	WhitelistSettings,
 	WhitelistSettingTab,
-} from "./settings";
+} from "./settings.js";
+
+// AICODE-NOTE: Enforcer class removed per plan.md — belongs to plugin-compliance-scan feature.
+// WhitelistPlugin now only manages settings persistence. Compliance logic added later.
 
 export default class WhitelistPlugin extends Plugin {
 	settings: WhitelistSettings = DEFAULT_SETTINGS;
-	enforcer: Enforcer = new Enforcer(this.settings);
-
-	async enforce() {
-		await this.loadSettings();
-
-		this.enforcer.enforce();
-
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItem = this.addStatusBarItem();
-		statusBarItem.setText(
-			`Whitelist: ${this.settings.mode} (${this.enforcer.status})`,
-		);
-	}
 
 	async onload() {
 		console.debug("Loading plugin");
-		await this.enforce();
+		await this.loadSettings();
 		this.addSettingTab(new WhitelistSettingTab(this.app, this));
 	}
 
@@ -41,19 +31,5 @@ export default class WhitelistPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-	}
-}
-
-class Enforcer {
-	settings: WhitelistSettings;
-
-	constructor(settings: WhitelistSettings) {
-		this.settings = settings;
-	}
-
-	enforce() {}
-
-	get status(): string {
-		return "compliant";
 	}
 }
