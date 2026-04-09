@@ -84,3 +84,37 @@ export class Notice {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	constructor(_message: string, _timeout?: number) {}
 }
+
+// AICODE-NOTE: Modal mock added for compliance-notification-modal feature (INIT-001)
+// Provides minimal stub of Obsidian's Modal class for unit testing ComplianceModal
+export class Modal {
+	app: App;
+	contentEl: HTMLElement;
+	modalEl: HTMLElement;
+
+	constructor(app: App) {
+		this.app = app;
+		// Minimal DOM stubs for test environment
+		this.contentEl = {
+			empty: () => {},
+			createEl: () => ({}),
+			createDiv: () => ({}),
+		} as unknown as HTMLElement;
+		this.modalEl = {
+			addClass: () => {},
+		} as unknown as HTMLElement;
+	}
+
+	open(): void {}
+	close(): void {}
+}
+
+// AICODE-NOTE: ButtonComponent mock for compliance-modal submit button (INIT-001)
+export class ButtonComponent {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	constructor(_containerEl: HTMLElement) {}
+
+	setButtonText(): this { return this; }
+	setCta(): this { return this; }
+	onClick(): this { return this; }
+}
