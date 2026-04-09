@@ -146,15 +146,12 @@ describe("WhitelistSettings", () => {
 	// AICODE-NOTE: TEST-011/012 test [FR-003, FR-004] - notification directory save behavior
 	describe("notification directory settings", () => {
 		it("TEST-011: saving empty notification directory stores empty string (fallback on load)", () => {
-			// When user clears the directory field, the settings object stores empty string.
-			// The fallback to DEFAULT_NOTIFICATION_DIR is applied on load (mergeSettings), not save.
 			const settings: WhitelistSettings = {
 				...DEFAULT_SETTINGS,
 				notificationDirectory: "",
 			};
 			expect(settings.notificationDirectory).toBe("");
 
-			// On next load, mergeSettings applies the fallback
 			const reloaded = mergeSettings(settings);
 			expect(reloaded.notificationDirectory).toBe(DEFAULT_NOTIFICATION_DIR);
 		});
@@ -167,9 +164,25 @@ describe("WhitelistSettings", () => {
 			};
 			expect(settings.notificationDirectory).toBe(customDir);
 
-			// mergeSettings preserves non-empty custom directory
 			const reloaded = mergeSettings(settings);
 			expect(reloaded.notificationDirectory).toBe(customDir);
+		});
+	});
+
+	// AICODE-NOTE: TEST-013 tests [FR-003, FR-005] - showCompliantIndicator toggle persistence
+	describe("showCompliantIndicator toggle", () => {
+		it("TEST-013: toggling showCompliantIndicator from false to true persists", () => {
+			// Start with defaults (showCompliantIndicator: false)
+			const settings: WhitelistSettings = { ...DEFAULT_SETTINGS };
+			expect(settings.showCompliantIndicator).toBe(false);
+
+			// Toggle to true
+			settings.showCompliantIndicator = true;
+			expect(settings.showCompliantIndicator).toBe(true);
+
+			// After save/load cycle, mergeSettings preserves the value
+			const reloaded = mergeSettings(settings);
+			expect(reloaded.showCompliantIndicator).toBe(true);
 		});
 	});
 });
