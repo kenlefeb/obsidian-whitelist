@@ -108,8 +108,8 @@ export function removePluginId(list: string[], id: string): string[] {
 	return list.filter((item) => item !== id);
 }
 
-// AICODE-NOTE: IMPL-006/007/008 implements [FR-003, FR-005, UX-001, UX-002, UX-003]
-// WhitelistSettingTab rebuilt with whitelist + blacklist sections, add/remove pattern.
+// AICODE-NOTE: IMPL-006/007/008/009/010 implements [FR-003, FR-005, UX-001, UX-002, UX-003]
+// WhitelistSettingTab with whitelist, blacklist, notifications, and display sections.
 export class WhitelistSettingTab extends PluginSettingTab {
 	plugin: WhitelistPlugin;
 
@@ -141,6 +141,41 @@ export class WhitelistSettingTab extends PluginSettingTab {
 			"blacklist",
 			"whitelist",
 		);
+
+		// --- Notifications Section (IMPL-009) ---
+		containerEl.createEl("h3", { text: "Notifications" });
+
+		new Setting(containerEl)
+			.setName("Notification directory")
+			.setDesc(
+				"Vault-relative path for compliance notification files. " +
+				"Leave empty to use default."
+			)
+			.addText((text) => {
+				text.setPlaceholder(DEFAULT_NOTIFICATION_DIR);
+				text.setValue(this.plugin.settings.notificationDirectory);
+				text.onChange(async (value) => {
+					this.plugin.settings.notificationDirectory = value;
+					await this.plugin.saveSettings();
+				});
+			});
+
+		// --- Display Section (IMPL-010) ---
+		containerEl.createEl("h3", { text: "Display" });
+
+		new Setting(containerEl)
+			.setName("Show compliant status bar indicator")
+			.setDesc(
+				"When enabled, shows an indicator in the status bar when " +
+				"all installed plugins are compliant."
+			)
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.showCompliantIndicator);
+				toggle.onChange(async (value) => {
+					this.plugin.settings.showCompliantIndicator = value;
+					await this.plugin.saveSettings();
+				});
+			});
 	}
 
 	/**

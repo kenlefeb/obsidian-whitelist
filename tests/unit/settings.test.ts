@@ -138,9 +138,38 @@ describe("WhitelistSettings", () => {
 			const error2 = validatePluginId("Obsidian-Tools", [], []);
 			expect(error2).not.toBeNull();
 
-			// Ensure "obsidian" as substring in non-word context is still caught
 			const error3 = validatePluginId("obsidiantools", [], []);
 			expect(error3).not.toBeNull();
+		});
+	});
+
+	// AICODE-NOTE: TEST-011/012 test [FR-003, FR-004] - notification directory save behavior
+	describe("notification directory settings", () => {
+		it("TEST-011: saving empty notification directory stores empty string (fallback on load)", () => {
+			// When user clears the directory field, the settings object stores empty string.
+			// The fallback to DEFAULT_NOTIFICATION_DIR is applied on load (mergeSettings), not save.
+			const settings: WhitelistSettings = {
+				...DEFAULT_SETTINGS,
+				notificationDirectory: "",
+			};
+			expect(settings.notificationDirectory).toBe("");
+
+			// On next load, mergeSettings applies the fallback
+			const reloaded = mergeSettings(settings);
+			expect(reloaded.notificationDirectory).toBe(DEFAULT_NOTIFICATION_DIR);
+		});
+
+		it("TEST-012: saving non-empty directory path persists the value", () => {
+			const customDir = "custom/notifications/";
+			const settings: WhitelistSettings = {
+				...DEFAULT_SETTINGS,
+				notificationDirectory: customDir,
+			};
+			expect(settings.notificationDirectory).toBe(customDir);
+
+			// mergeSettings preserves non-empty custom directory
+			const reloaded = mergeSettings(settings);
+			expect(reloaded.notificationDirectory).toBe(customDir);
 		});
 	});
 });
