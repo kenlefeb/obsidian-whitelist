@@ -21,7 +21,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - [x] TEST-001 [US1] Test that plugins not on whitelist are flagged with reason "not_on_whitelist" when whitelist has entries in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-001 [US1] Implement whitelist check logic in `runComplianceScan()`: iterate manifests, exclude selfId, flag plugins not in settings.whitelist in `src/compliance.ts`
+- [x] IMPL-001 [US1] Implement whitelist check logic in `runComplianceScan()`: iterate manifests, exclude selfId, flag plugins not in settings.whitelist in `src/compliance.ts`
 
 ## Phase 3: User Story 2 - Blacklist Enforcement (P1)
 
@@ -35,7 +35,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - [x] TEST-002 [US2] Test that plugins on blacklist are flagged with reason "on_blacklist" when blacklist has entries in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-002 [US2] Implement blacklist check logic in `runComplianceScan()`: flag plugins found in settings.blacklist in `src/compliance.ts`
+- [x] IMPL-002 [US2] Implement blacklist check logic in `runComplianceScan()`: flag plugins found in settings.blacklist in `src/compliance.ts`
 
 ## Phase 4: User Story 3 - Blacklist Precedence (P1)
 
@@ -49,7 +49,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - [x] TEST-003 [US3] Test that a plugin on both whitelist and blacklist is flagged with reason "on_blacklist" (blacklist precedence) in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-003 [US3] Ensure blacklist check runs before/overrides whitelist in `runComplianceScan()` in `src/compliance.ts`
+- [x] IMPL-003 [US3] Ensure blacklist check runs before/overrides whitelist in `runComplianceScan()` in `src/compliance.ts`
 
 ## Phase 5: User Story 4 - No Enforcement When Lists Empty (P1)
 
@@ -62,7 +62,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - [x] TEST-004 [US4] Test that empty whitelist and empty blacklist returns compliant with no violations in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-004 [US4] Add early return in `runComplianceScan()` when both lists empty in `src/compliance.ts`
+- [x] IMPL-004 [US4] Add early return in `runComplianceScan()` when both lists empty in `src/compliance.ts`
 
 ## Phase 6: User Story 5 - Whitelist-Only Enforcement (P2)
 
@@ -74,7 +74,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - [x] TEST-005 [US5] Test that only whitelist enforcement applies when whitelist has entries and blacklist is empty in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-005 [US5] Ensure blacklist check is skipped when blacklist is empty in `src/compliance.ts`
+- [x] IMPL-005 [US5] Ensure blacklist check is skipped when blacklist is empty in `src/compliance.ts`
 
 ## Phase 7: User Story 6 - Blacklist-Only Enforcement (P2)
 
@@ -83,10 +83,10 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - Requirements: FR-004, FR-006
 
 #### RED Phase
-- [ ] TEST-006 [US6] Test that only blacklist enforcement applies when blacklist has entries and whitelist is empty in `tests/unit/compliance.test.ts`
+- [x] TEST-006 [US6] Test that only blacklist enforcement applies when blacklist has entries and whitelist is empty in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-006 [US6] Ensure whitelist check is skipped when whitelist is empty in `src/compliance.ts`
+- [x] IMPL-006 [US6] Ensure whitelist check is skipped when whitelist is empty in `src/compliance.ts`
 
 ## Phase 8: User Story 7 - No Plugins Installed (P3)
 
@@ -96,10 +96,10 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - States: scanning → complete_compliant
 
 #### RED Phase
-- [ ] TEST-007 [US7] Test that empty manifests object returns compliant with no violations in `tests/unit/compliance.test.ts`
+- [x] TEST-007 [US7] Test that empty manifests object returns compliant with no violations in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-007 [US7] Verify `runComplianceScan()` handles empty manifests (may already pass)
+- [x] IMPL-007 [US7] Verify `runComplianceScan()` handles empty manifests (may already pass)
 
 ## Phase 9: Edge Cases
 
@@ -109,20 +109,20 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - Constants: SELF_PLUGIN_ID
 
 #### RED Phase
-- [ ] TEST-008 [US1] Test that the whitelist plugin itself is excluded from compliance checking in `tests/unit/compliance.test.ts`
+- [x] TEST-008 [US1] Test that the whitelist plugin itself is excluded from compliance checking in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-008 [US1] Verify selfId filtering in `runComplianceScan()` (may already pass from IMPL-001)
+- [x] IMPL-008 [US1] Verify selfId filtering in `runComplianceScan()` (may already pass from IMPL-001)
 
 ### TDD Cycle 2: Installed But Disabled
 **Coverage**:
 - Requirements: FR-002
 
 #### RED Phase
-- [ ] TEST-009 [US1] Test that installed-but-disabled plugins are still checked against lists in `tests/unit/compliance.test.ts`
+- [x] TEST-009 [US1] Test that installed-but-disabled plugins are still checked against lists in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-009 [US1] Verify scan uses manifests (all installed) not just enabled plugins (may already pass)
+- [x] IMPL-009 [US1] Verify scan uses manifests (all installed) not just enabled plugins (may already pass)
 
 ### TDD Cycle 3: Integration with Main Plugin
 **Coverage**:
@@ -130,7 +130,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - States: idle → scanning → complete
 
 #### RED Phase
-- [ ] TEST-010 [US1] Test that `runComplianceScan` is callable with WhitelistSettings and returns valid ComplianceResult type in `tests/unit/compliance.test.ts`
+- [x] TEST-010 [US1] Test that `runComplianceScan` is callable with WhitelistSettings and returns valid ComplianceResult type in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
 - [x] IMPL-010 [US1] Integrate `runComplianceScan()` into `WhitelistPlugin.onload()` in `src/main.ts`: call after loadSettings inside `onLayoutReady`, store result on plugin instance for downstream features
