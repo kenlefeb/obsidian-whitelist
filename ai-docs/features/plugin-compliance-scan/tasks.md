@@ -32,7 +32,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - States: scanning → complete_non_compliant
 
 #### RED Phase
-- [ ] TEST-002 [US2] Test that plugins on blacklist are flagged with reason "on_blacklist" when blacklist has entries in `tests/unit/compliance.test.ts`
+- [x] TEST-002 [US2] Test that plugins on blacklist are flagged with reason "on_blacklist" when blacklist has entries in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
 - [ ] IMPL-002 [US2] Implement blacklist check logic in `runComplianceScan()`: flag plugins found in settings.blacklist in `src/compliance.ts`

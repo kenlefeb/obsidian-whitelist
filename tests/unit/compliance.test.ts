@@ -67,4 +67,24 @@ describe("runComplianceScan", () => {
 			});
 		});
 	});
+
+	// AICODE-NOTE: TEST-002 tests [FR-001, FR-004, FR-007] - blacklist enforcement
+	describe("US2: Blacklist Enforcement", () => {
+		it("TEST-002: flags plugins on blacklist with reason 'on_blacklist'", () => {
+			const settings = makeSettings({
+				blacklist: ["pluginX"],
+			});
+			const manifests = makeManifests("pluginA", "pluginX");
+
+			const result = runComplianceScan(settings, manifests, SELF_ID);
+
+			expect(result.compliant).toBe(false);
+			expect(result.violations).toHaveLength(1);
+			expect(result.violations[0]).toEqual({
+				pluginId: "pluginX",
+				pluginName: "Plugin pluginX",
+				reason: "on_blacklist",
+			});
+		});
+	});
 });

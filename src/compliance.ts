@@ -38,6 +38,7 @@ export interface ComplianceResult {
  * @returns ComplianceResult with violations list
  */
 // AICODE-NOTE: IMPL-001 implements [FR-001, FR-003, FR-007] - whitelist check logic
+// AICODE-NOTE: IMPL-002 implements [FR-004] - blacklist check logic
 export function runComplianceScan(
 	settings: WhitelistSettings,
 	manifests: Record<string, { id: string; name: string }>,
@@ -46,6 +47,19 @@ export function runComplianceScan(
 	const violations: Violation[] = [];
 
 	const pluginIds = Object.keys(manifests).filter((id) => id !== selfId);
+
+	// Blacklist enforcement: flag plugins on blacklist (FR-004)
+	if (settings.blacklist.length > 0) {
+		for (const id of pluginIds) {
+			if (settings.blacklist.includes(id)) {
+				violations.push({
+					pluginId: id,
+					pluginName: manifests[id].name,
+					reason: "on_blacklist",
+				});
+			}
+		}
+	}
 
 	// Whitelist enforcement: flag plugins not on whitelist (FR-003)
 	if (settings.whitelist.length > 0) {
