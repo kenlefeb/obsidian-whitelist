@@ -52,7 +52,64 @@ export function mergeSettings(
 	return merged;
 }
 
-// AICODE-TODO: WhitelistSettingTab.display() will be rebuilt in Phase 3+ TDD cycles.
+// AICODE-NOTE: IMPL-003 implements [FR-006] - validate plugin ID before add
+// AICODE-NOTE: IMPL-012 adds cross-list check per CHK009
+// AICODE-NOTE: IMPL-013 adds "obsidian" word rejection per CHK032
+/**
+ * Validates a plugin ID before adding to a list.
+ * Returns error message string if invalid, null if valid.
+ * No self-exclusion: plugin's own ID is allowed per CHK002.
+ */
+export function validatePluginId(
+	id: string,
+	list: string[],
+	otherList: string[],
+): string | null {
+	const trimmed = id.trim();
+	if (trimmed === "") {
+		return "Plugin ID cannot be empty";
+	}
+	if (list.includes(trimmed)) {
+		return `"${trimmed}" is already in this list`;
+	}
+	// CHK009: cross-list duplicate rejection
+	if (otherList.includes(trimmed)) {
+		return `"${trimmed}" is already in the other list`;
+	}
+	// CHK032: reject IDs containing "obsidian" per Obsidian manifest rules
+	if (trimmed.toLowerCase().includes("obsidian")) {
+		return `Plugin IDs must not contain the word "obsidian"`;
+	}
+	return null;
+}
+
+// AICODE-NOTE: IMPL-004 implements [FR-006] - add plugin ID to list
+/**
+ * Adds a plugin ID to a list after validation.
+ * Returns new list and optional error message.
+ */
+export function addPluginId(
+	list: string[],
+	id: string,
+	otherList: string[],
+): { list: string[]; error?: string } {
+	const error = validatePluginId(id, list, otherList);
+	if (error) {
+		return { list, error };
+	}
+	return { list: [...list, id.trim()] };
+}
+
+// AICODE-NOTE: IMPL-005 implements [FR-006] - remove plugin ID from list
+/**
+ * Removes a plugin ID from a list. Returns new list.
+ */
+export function removePluginId(list: string[], id: string): string[] {
+	return list.filter((item) => item !== id);
+}
+
+// AICODE-NOTE: IMPL-006/007 implements [FR-003, FR-005, UX-001, UX-002, UX-003]
+// WhitelistSettingTab rebuilt with whitelist section, add/remove pattern.
 export class WhitelistSettingTab extends PluginSettingTab {
 	plugin: WhitelistPlugin;
 
@@ -65,11 +122,74 @@ export class WhitelistSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
+		// --- Whitelist Section ---
+		containerEl.createEl("h3", { text: "Whitelist" });
+
+		let whitelistInput = "";
+		const whitelistErrorEl = containerEl.createEl("div", {
+			cls: "setting-error",
+		});
+
 		new Setting(containerEl)
-			.setName("Plugin settings")
-			.setDesc(
-				"Configure whitelist, blacklist, and notification preferences. " +
-				"Full UI coming in next iteration."
-			);
+			.setName("Add plugin to whitelist")
+			.setDesc("Enter a community plugin ID to approve")
+			.addText((text) => {
+				text.setPlaceholder("e.g., dataview");
+				text.onChange((value) => {
+					whitelistInput = value;
+				});
+			})
+			.addButton((btn) => {
+				btn.setButtonText("Add");
+				btn.onClick(() => {
+					const result = addPluginId(
+						this.plugin.settings.whitelist,
+						whitelistInput,
+						this.plugin.settings.blacklist,
+					);
+					if (result.error) {
+						whitelistErrorEl.setText(result.error);
+					} else {
+						whitelistErrorEl.setText("");
+						this.plugin.settings.whitelist = result.list;
+						this.plugin.saveSettings();
+						this.display();
+					}
+				});
+			});
+
+		this.renderPluginList(
+			containerEl,
+			this.plugin.settings.whitelist,
+			"whitelist",
+		);
+	}
+
+	/**
+	 * Renders a list of plugin IDs with trash buttons for removal.
+	 * Clears and rebuilds on each call.
+	 */
+	private renderPluginList(
+		container: HTMLElement,
+		list: string[],
+		listName: "whitelist" | "blacklist",
+	): void {
+		const listContainer = container.createDiv({ cls: "plugin-list" });
+		for (const pluginId of list) {
+			new Setting(listContainer)
+				.setName(pluginId)
+				.addButton((btn) => {
+					btn.setIcon("trash");
+					btn.setTooltip("Remove");
+					btn.onClick(() => {
+						this.plugin.settings[listName] = removePluginId(
+							this.plugin.settings[listName],
+							pluginId,
+						);
+						this.plugin.saveSettings();
+						this.display();
+					});
+				});
+		}
 	}
 }

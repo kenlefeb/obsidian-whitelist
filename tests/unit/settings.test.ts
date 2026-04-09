@@ -8,6 +8,9 @@ import {
 	DEFAULT_NOTIFICATION_DIR,
 	WhitelistSettings,
 	mergeSettings,
+	addPluginId,
+	removePluginId,
+	validatePluginId,
 } from "../../src/settings";
 
 describe("WhitelistSettings", () => {
@@ -58,6 +61,68 @@ describe("WhitelistSettings", () => {
 			const result = mergeSettings(withEmptyDir);
 			expect(result.notificationDirectory).toBe(DEFAULT_NOTIFICATION_DIR);
 			expect(result.whitelist).toEqual(["some-plugin"]);
+		});
+	});
+
+	// AICODE-NOTE: TEST-004 through TEST-007 test [FR-006] - plugin ID add/validate
+	describe("addPluginId", () => {
+		it("TEST-004: rejects empty string after trim", () => {
+			const result = addPluginId([], "   ", []);
+			expect(result.error).toBeDefined();
+			expect(result.list).toEqual([]);
+		});
+
+		it("TEST-005: rejects duplicate ID already in target list", () => {
+			const result = addPluginId(["dataview"], "dataview", []);
+			expect(result.error).toBeDefined();
+			expect(result.list).toEqual(["dataview"]);
+		});
+
+		it("TEST-006: trims whitespace and preserves original casing per CHK039", () => {
+			const result = addPluginId([], "  DataView  ", []);
+			expect(result.error).toBeUndefined();
+			expect(result.list).toEqual(["DataView"]);
+		});
+
+		it("TEST-007: adds valid ID to whitelist array", () => {
+			const result = addPluginId(["existing-plugin"], "dataview", []);
+			expect(result.error).toBeUndefined();
+			expect(result.list).toEqual(["existing-plugin", "dataview"]);
+		});
+	});
+
+	describe("removePluginId", () => {
+		// AICODE-NOTE: TEST-008 tests [FR-006] - remove from whitelist
+		it("TEST-008: removes ID from whitelist array", () => {
+			const result = removePluginId(
+				["dataview", "obsidian-git", "templater"],
+				"obsidian-git"
+			);
+			expect(result).toEqual(["dataview", "templater"]);
+		});
+	});
+
+	describe("validatePluginId - cross-list", () => {
+		// AICODE-NOTE: TEST-016 tests [CHK009] - cross-list duplicate rejection
+		it("TEST-016: rejects ID already present in the other list", () => {
+			const error = validatePluginId("dataview", [], ["dataview"]);
+			expect(error).not.toBeNull();
+			expect(error).toContain("already");
+		});
+	});
+
+	describe("validatePluginId - obsidian word check", () => {
+		// AICODE-NOTE: TEST-017 tests [CHK032] - IDs containing "obsidian" rejected
+		it("TEST-017: rejects IDs containing the word 'obsidian'", () => {
+			const error1 = validatePluginId("my-obsidian-plugin", [], []);
+			expect(error1).not.toBeNull();
+
+			const error2 = validatePluginId("Obsidian-Tools", [], []);
+			expect(error2).not.toBeNull();
+
+			// Ensure "obsidian" as substring in non-word context is still caught
+			const error3 = validatePluginId("obsidiantools", [], []);
+			expect(error3).not.toBeNull();
 		});
 	});
 });
