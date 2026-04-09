@@ -18,7 +18,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - States: scanning → complete_non_compliant
 
 #### RED Phase
-- [ ] TEST-001 [US1] Test that plugins not on whitelist are flagged with reason "not_on_whitelist" when whitelist has entries in `tests/unit/compliance.test.ts`
+- [x] TEST-001 [US1] Test that plugins not on whitelist are flagged with reason "not_on_whitelist" when whitelist has entries in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
 - [ ] IMPL-001 [US1] Implement whitelist check logic in `runComplianceScan()`: iterate manifests, exclude selfId, flag plugins not in settings.whitelist in `src/compliance.ts`

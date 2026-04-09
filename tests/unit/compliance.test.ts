@@ -12,18 +12,59 @@ import {
 } from "../../src/compliance.js";
 import type { WhitelistSettings } from "../../src/settings.js";
 
+/** Helper to build settings with defaults */
+function makeSettings(
+	overrides: Partial<WhitelistSettings> = {},
+): WhitelistSettings {
+	return {
+		whitelist: [],
+		blacklist: [],
+		notificationDirectory: ".obsidian-whitelist/notifications/",
+		showCompliantIndicator: false,
+		...overrides,
+	};
+}
+
+/** Helper to build manifests */
+function makeManifests(
+	...ids: string[]
+): Record<string, { id: string; name: string }> {
+	const result: Record<string, { id: string; name: string }> = {};
+	for (const id of ids) {
+		result[id] = { id, name: `Plugin ${id}` };
+	}
+	return result;
+}
+
+const SELF_ID = "obsidian-whitelist";
+
 describe("runComplianceScan", () => {
 	it("should be importable and callable", () => {
-		const settings: WhitelistSettings = {
-			whitelist: [],
-			blacklist: [],
-			notificationDirectory: ".obsidian-whitelist/notifications/",
-			showCompliantIndicator: false,
-		};
-		const result = runComplianceScan(settings, {}, "obsidian-whitelist");
+		const settings = makeSettings();
+		const result = runComplianceScan(settings, {}, SELF_ID);
 
 		expect(result).toBeDefined();
 		expect(result.compliant).toBe(true);
 		expect(result.violations).toEqual([]);
+	});
+
+	// AICODE-NOTE: TEST-001 tests [FR-001, FR-003, FR-007] - whitelist enforcement
+	describe("US1: Whitelist Enforcement", () => {
+		it("TEST-001: flags plugins not on whitelist with reason 'not_on_whitelist'", () => {
+			const settings = makeSettings({
+				whitelist: ["pluginA", "pluginB"],
+			});
+			const manifests = makeManifests("pluginA", "pluginB", "pluginC");
+
+			const result = runComplianceScan(settings, manifests, SELF_ID);
+
+			expect(result.compliant).toBe(false);
+			expect(result.violations).toHaveLength(1);
+			expect(result.violations[0]).toEqual({
+				pluginId: "pluginC",
+				pluginName: "Plugin pluginC",
+				reason: "not_on_whitelist",
+			});
+		});
 	});
 });
