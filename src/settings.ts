@@ -155,7 +155,9 @@ export class WhitelistSettingTab extends PluginSettingTab {
 		);
 
 		// --- Notifications Section (IMPL-009) ---
-		containerEl.createEl("h3", { text: "Notifications" });
+		new Setting(containerEl)
+			.setName("Notifications")
+			.setHeading();
 
 		new Setting(containerEl)
 			.setName("Notification directory")
@@ -173,7 +175,9 @@ export class WhitelistSettingTab extends PluginSettingTab {
 			});
 
 		// --- Display Section (IMPL-010) ---
-		containerEl.createEl("h3", { text: "Display" });
+		new Setting(containerEl)
+			.setName("Display")
+			.setHeading();
 
 		new Setting(containerEl)
 			.setName("Show compliant status bar indicator")
@@ -201,7 +205,9 @@ export class WhitelistSettingTab extends PluginSettingTab {
 		listName: "whitelist" | "blacklist",
 		otherListName: "whitelist" | "blacklist",
 	): void {
-		container.createEl("h3", { text: heading });
+		new Setting(container)
+			.setName(heading)
+			.setHeading();
 
 		let inputValue = "";
 		const errorEl = container.createEl("div", { cls: "setting-error" });
@@ -210,7 +216,7 @@ export class WhitelistSettingTab extends PluginSettingTab {
 			.setName(inputName)
 			.setDesc(inputDesc)
 			.addText((text) => {
-				text.setPlaceholder("e.g., dataview");
+				text.setPlaceholder("Plugin ID");
 				text.onChange((value) => {
 					inputValue = value;
 				});
@@ -228,7 +234,7 @@ export class WhitelistSettingTab extends PluginSettingTab {
 					} else {
 						errorEl.setText("");
 						this.plugin.settings[listName] = result.list;
-						this.plugin.saveSettings();
+						void this.plugin.saveSettings();
 						this.display();
 					}
 				});
@@ -257,7 +263,7 @@ export class WhitelistSettingTab extends PluginSettingTab {
 							this.plugin.settings[listName],
 							pluginId,
 						);
-						this.plugin.saveSettings();
+						void this.plugin.saveSettings();
 						this.display();
 					});
 				});

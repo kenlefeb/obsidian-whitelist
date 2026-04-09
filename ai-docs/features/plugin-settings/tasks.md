@@ -39,14 +39,14 @@ TDD-structured implementation tasks for the plugin-settings feature. Refactors e
 - Validation: PluginId Validation rules from data-model.md
 
 #### RED Phase
-- [ ] TEST-004 [US2] Test that addPluginId rejects empty string after trim in `tests/unit/settings.test.ts`
-- [ ] TEST-005 [US2] Test that addPluginId rejects duplicate ID already in target list in `tests/unit/settings.test.ts`
-- [ ] TEST-006 [US2] Test that addPluginId trims whitespace before adding and preserves original casing per CHK039 in `tests/unit/settings.test.ts`
-- [ ] TEST-007 [US2] Test that addPluginId adds valid ID to whitelist array in `tests/unit/settings.test.ts`
+- [x] TEST-004 [US2] Test that addPluginId rejects empty string after trim in `tests/unit/settings.test.ts`
+- [x] TEST-005 [US2] Test that addPluginId rejects duplicate ID already in target list in `tests/unit/settings.test.ts`
+- [x] TEST-006 [US2] Test that addPluginId trims whitespace before adding and preserves original casing per CHK039 in `tests/unit/settings.test.ts`
+- [x] TEST-007 [US2] Test that addPluginId adds valid ID to whitelist array in `tests/unit/settings.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-003 [US2] Implement `validatePluginId(id: string, list: string[], otherList: string[]): string | null` validation helper in `src/settings.ts` (returns error message or null; no self-exclusion — plugin's own ID is allowed per CHK002)
-- [ ] IMPL-004 [US2] Implement `addPluginId(list: string[], id: string): { list: string[], error?: string }` in `src/settings.ts`
+- [x] IMPL-003 [US2] Implement `validatePluginId(id: string, list: string[], otherList: string[]): string | null` validation helper in `src/settings.ts` (returns error message or null; no self-exclusion -- plugin's own ID is allowed per CHK002)
+- [x] IMPL-004 [US2] Implement `addPluginId(list: string[], id: string): { list: string[], error?: string }` in `src/settings.ts`
 
 ### TDD Cycle 2: Whitelist Settings UI
 **Coverage**:
@@ -54,32 +54,32 @@ TDD-structured implementation tasks for the plugin-settings feature. Refactors e
 - Components: PluginSettingTab, SectionHeading, PluginIdInput, PluginListContainer, PluginListEntry, ButtonComponent
 
 #### RED Phase
-- [ ] TEST-008 [US2] Test that removePluginId removes ID from whitelist array in `tests/unit/settings.test.ts`
+- [x] TEST-008 [US2] Test that removePluginId removes ID from whitelist array in `tests/unit/settings.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-005 [US2] Implement `removePluginId(list: string[], id: string): string[]` in `src/settings.ts`
-- [ ] IMPL-006 [US2] Implement `renderPluginList()` helper in WhitelistSettingTab: clears container, renders PluginListEntry for each ID with trash button in `src/settings.ts`
-- [ ] IMPL-007 [US2] Rebuild WhitelistSettingTab.display() with Whitelist section: SectionHeading, PluginIdInput (Setting + addText + addButton), PluginListContainer in `src/settings.ts`
+- [x] IMPL-005 [US2] Implement `removePluginId(list: string[], id: string): string[]` in `src/settings.ts`
+- [x] IMPL-006 [US2] Implement `renderPluginList()` helper in WhitelistSettingTab: clears container, renders PluginListEntry for each ID with trash button in `src/settings.ts`
+- [x] IMPL-007 [US2] Rebuild WhitelistSettingTab.display() with Whitelist section: SectionHeading, PluginIdInput (Setting + addText + addButton), PluginListContainer in `src/settings.ts`
 
 ### From CHK009: Cross-List Duplicate Prevention
 **Coverage**:
 - Resolution: Prevent adding a plugin ID to one list if it already exists in the other list
 
 #### RED Phase
-- [ ] TEST-016 [US2] Test that addPluginId rejects ID already present in the other list (e.g., adding to whitelist when already in blacklist) in `tests/unit/settings.test.ts`
+- [x] TEST-016 [US2] Test that addPluginId rejects ID already present in the other list (e.g., adding to whitelist when already in blacklist) in `tests/unit/settings.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-012 [US2] Update `validatePluginId` to accept `otherList` parameter and reject cross-list duplicates in `src/settings.ts`
+- [x] IMPL-012 [US2] Update `validatePluginId` to accept `otherList` parameter and reject cross-list duplicates in `src/settings.ts`
 
 ### From CHK032: Plugin ID Format Enforcement per Obsidian Docs
 **Coverage**:
-- Resolution: Enforce Obsidian official manifest rules — ID must not contain the word "obsidian"
+- Resolution: Enforce Obsidian official manifest rules -- ID must not contain the word "obsidian"
 
 #### RED Phase
-- [ ] TEST-017 [US2] Test that addPluginId rejects IDs containing the word "obsidian" (case-insensitive check) in `tests/unit/settings.test.ts`
+- [x] TEST-017 [US2] Test that addPluginId rejects IDs containing the word "obsidian" (case-insensitive check) in `tests/unit/settings.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-013 [US2] Update `validatePluginId` to reject IDs containing "obsidian" per Obsidian manifest rules in `src/settings.ts`
+- [x] IMPL-013 [US2] Update `validatePluginId` to reject IDs containing "obsidian" per Obsidian manifest rules in `src/settings.ts`
 
 ## Phase 4: User Story 3 - Add Plugin IDs to Blacklist (P1)
 
@@ -89,11 +89,11 @@ TDD-structured implementation tasks for the plugin-settings feature. Refactors e
 - Components: PluginIdInput, PluginListContainer, PluginListEntry
 
 #### RED Phase
-- [ ] TEST-009 [US3] Test that addPluginId adds valid ID to blacklist array in `tests/unit/settings.test.ts`
-- [ ] TEST-010 [US3] Test that removePluginId removes ID from blacklist array in `tests/unit/settings.test.ts`
+- [x] TEST-009 [US3] Test that addPluginId adds valid ID to blacklist array in `tests/unit/settings.test.ts`
+- [x] TEST-010 [US3] Test that removePluginId removes ID from blacklist array in `tests/unit/settings.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-008 [US3] Add Blacklist section to WhitelistSettingTab.display(): SectionHeading, PluginIdInput, PluginListContainer (reuses renderPluginList pattern) in `src/settings.ts`
+- [x] IMPL-008 [US3] Add Blacklist section to WhitelistSettingTab.display(): SectionHeading, PluginIdInput, PluginListContainer (reuses renderPluginList pattern) in `src/settings.ts`
 
 ## Phase 5: User Story 4 - Change Notification Directory (P2)
 
@@ -105,11 +105,11 @@ TDD-structured implementation tasks for the plugin-settings feature. Refactors e
 - Components: NotificationDirectorySetting, TextComponent
 
 #### RED Phase
-- [ ] TEST-011 [US4] Test that saving empty notification directory stores empty string (fallback applied on load, not save) in `tests/unit/settings.test.ts`
-- [ ] TEST-012 [US4] Test that saving non-empty directory path persists the value in `tests/unit/settings.test.ts`
+- [x] TEST-011 [US4] Test that saving empty notification directory stores empty string (fallback applied on load, not save) in `tests/unit/settings.test.ts`
+- [x] TEST-012 [US4] Test that saving non-empty directory path persists the value in `tests/unit/settings.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-009 [US4] Add Notifications section to WhitelistSettingTab.display(): SectionHeading, NotificationDirectorySetting (Setting + addText with placeholder DEFAULT_NOTIFICATION_DIR, save on change) in `src/settings.ts`
+- [x] IMPL-009 [US4] Add Notifications section to WhitelistSettingTab.display(): SectionHeading, NotificationDirectorySetting (Setting + addText with placeholder DEFAULT_NOTIFICATION_DIR, save on change) in `src/settings.ts`
 
 ## Phase 6: User Story 5 - Toggle Compliant Status Bar Indicator (P2)
 
@@ -121,10 +121,10 @@ TDD-structured implementation tasks for the plugin-settings feature. Refactors e
 - Components: CompliantIndicatorToggle, ToggleComponent
 
 #### RED Phase
-- [ ] TEST-013 [US5] Test that toggling showCompliantIndicator from false to true persists in settings in `tests/unit/settings.test.ts`
+- [x] TEST-013 [US5] Test that toggling showCompliantIndicator from false to true persists in settings in `tests/unit/settings.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-010 [US5] Add Display section to WhitelistSettingTab.display(): SectionHeading, CompliantIndicatorToggle (Setting + addToggle, save on change) in `src/settings.ts`
+- [x] IMPL-010 [US5] Add Display section to WhitelistSettingTab.display(): SectionHeading, CompliantIndicatorToggle (Setting + addToggle, save on change) in `src/settings.ts`
 
 ## Phase 7: User Story 6 - Pre-configured data.json Loading (P3)
 
@@ -134,11 +134,11 @@ TDD-structured implementation tasks for the plugin-settings feature. Refactors e
 - Data entities: WhitelistSettings
 
 #### RED Phase
-- [ ] TEST-014 [US6] Test that mergeSettings with fully populated data returns all provided values (no defaults override) in `tests/unit/settings.test.ts`
-- [ ] TEST-015 [US6] Test that mergeSettings with extra unknown fields ignores them and returns valid WhitelistSettings in `tests/unit/settings.test.ts`
+- [x] TEST-014 [US6] Test that mergeSettings with fully populated data returns all provided values (no defaults override) in `tests/unit/settings.test.ts`
+- [x] TEST-015 [US6] Test that mergeSettings with extra unknown fields ignores them and returns valid WhitelistSettings in `tests/unit/settings.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-011 [US6] Verify mergeSettings implementation handles full and extra-field scenarios (may already pass from US1 implementation)
+- [x] IMPL-011 [US6] Verify mergeSettings implementation handles full and extra-field scenarios (may already pass from US1 implementation)
 
 ## Execution Order
 
@@ -150,12 +150,12 @@ TDD-structured implementation tasks for the plugin-settings feature. Refactors e
 6. **Phase 6**: US5 - Toggle Compliant Status Bar Indicator (P2)
 7. **Phase 7**: US6 - Pre-configured data.json Loading (P3)
 
-Within each story: RED → GREEN cycles
+Within each story: RED -> GREEN cycles
 
 ## Notes
 
-- Tasks organized by TDD cycles: RED → GREEN
-- Stories execute in priority order (P1 → P2 → P3)
+- Tasks organized by TDD cycles: RED -> GREEN
+- Stories execute in priority order (P1 -> P2 -> P3)
 - Each story independently testable after Phase 1
 - Tests precede implementation
 - No test stubs or always-passing mocks

@@ -58,6 +58,7 @@ export class Setting {
 
 	setName(): this { return this; }
 	setDesc(): this { return this; }
+	setHeading(): this { return this; }
 	addText(): this { return this; }
 	addTextArea(): this { return this; }
 	addToggle(): this { return this; }
