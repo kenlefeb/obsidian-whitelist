@@ -22,13 +22,13 @@ TDD-structured implementation tasks for the plugin-settings feature. Refactors e
 - Constants: DEFAULT_NOTIFICATION_DIR, DEFAULT_SHOW_COMPLIANT, DEFAULT_WHITELIST, DEFAULT_BLACKLIST
 
 #### RED Phase
-- [ ] TEST-001 [US1] Test that loadSettings with null/undefined data returns DEFAULT_SETTINGS in `tests/unit/settings.test.ts`
-- [ ] TEST-002 [US1] Test that loadSettings merges partial data with defaults (missing fields filled) in `tests/unit/settings.test.ts`
-- [ ] TEST-003 [US1] Test that loadSettings with empty notificationDirectory replaces with DEFAULT_NOTIFICATION_DIR in `tests/unit/settings.test.ts`
+- [x] TEST-001 [US1] Test that loadSettings with null/undefined data returns DEFAULT_SETTINGS in `tests/unit/settings.test.ts`
+- [x] TEST-002 [US1] Test that loadSettings merges partial data with defaults (missing fields filled) in `tests/unit/settings.test.ts`
+- [x] TEST-003 [US1] Test that loadSettings with empty notificationDirectory replaces with DEFAULT_NOTIFICATION_DIR in `tests/unit/settings.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-001 [US1] Implement `mergeSettings(loaded: Partial<WhitelistSettings>): WhitelistSettings` helper in `src/settings.ts`
-- [ ] IMPL-002 [US1] Update `loadSettings()` in `src/main.ts` to use mergeSettings with empty directory fallback
+- [x] IMPL-001 [US1] Implement `mergeSettings(loaded: Partial<WhitelistSettings>): WhitelistSettings` helper in `src/settings.ts`
+- [x] IMPL-002 [US1] Update `loadSettings()` in `src/main.ts` to use mergeSettings with empty directory fallback
 
 ## Phase 3: User Story 2 - Add Plugin IDs to Whitelist (P1)
 

@@ -3,9 +3,10 @@ import {
 	DEFAULT_SETTINGS,
 	WhitelistSettings,
 	WhitelistSettingTab,
+	mergeSettings,
 } from "./settings.js";
 
-// AICODE-NOTE: Enforcer class removed per plan.md — belongs to plugin-compliance-scan feature.
+// AICODE-NOTE: Enforcer class removed per plan.md -- belongs to plugin-compliance-scan feature.
 // WhitelistPlugin now only manages settings persistence. Compliance logic added later.
 
 export default class WhitelistPlugin extends Plugin {
@@ -21,12 +22,10 @@ export default class WhitelistPlugin extends Plugin {
 		console.debug("Unloading plugin");
 	}
 
+	// AICODE-NOTE: IMPL-002 implements [FR-002, FR-004] - uses mergeSettings for robust loading
 	async loadSettings() {
-		this.settings = Object.assign(
-			{},
-			DEFAULT_SETTINGS,
-			(await this.loadData()) as Partial<WhitelistSettings>,
-		);
+		const loaded = (await this.loadData()) as Partial<WhitelistSettings>;
+		this.settings = mergeSettings(loaded);
 	}
 
 	async saveSettings() {
