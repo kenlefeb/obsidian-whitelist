@@ -62,6 +62,44 @@ describe("WhitelistSettings", () => {
 			expect(result.notificationDirectory).toBe(DEFAULT_NOTIFICATION_DIR);
 			expect(result.whitelist).toEqual(["some-plugin"]);
 		});
+
+		// AICODE-NOTE: TEST-014 tests [FR-002] - fully populated data preserved
+		it("TEST-014: fully populated data returns all provided values without defaults override", () => {
+			const fullData: WhitelistSettings = {
+				whitelist: ["dataview", "templater", "calendar"],
+				blacklist: ["sketchy-plugin"],
+				notificationDirectory: "custom/path/notifications/",
+				showCompliantIndicator: true,
+			};
+			const result = mergeSettings(fullData);
+			expect(result.whitelist).toEqual(["dataview", "templater", "calendar"]);
+			expect(result.blacklist).toEqual(["sketchy-plugin"]);
+			expect(result.notificationDirectory).toBe("custom/path/notifications/");
+			expect(result.showCompliantIndicator).toBe(true);
+		});
+
+		// AICODE-NOTE: TEST-015 tests [FR-002] - extra unknown fields ignored
+		it("TEST-015: extra unknown fields are ignored, returns valid WhitelistSettings", () => {
+			const dataWithExtras = {
+				whitelist: ["dataview"],
+				blacklist: [],
+				notificationDirectory: DEFAULT_NOTIFICATION_DIR,
+				showCompliantIndicator: false,
+				unknownField: "should be ignored",
+				anotherExtra: 42,
+				nestedExtra: { deep: true },
+			};
+			const result = mergeSettings(
+				dataWithExtras as unknown as Partial<WhitelistSettings>
+			);
+			// Known fields preserved
+			expect(result.whitelist).toEqual(["dataview"]);
+			expect(result.blacklist).toEqual([]);
+			expect(result.notificationDirectory).toBe(DEFAULT_NOTIFICATION_DIR);
+			expect(result.showCompliantIndicator).toBe(false);
+			// Extra fields should not be accessible on typed result
+			expect((result as Record<string, unknown>)["unknownField"]).toBeUndefined();
+		});
 	});
 
 	// AICODE-NOTE: TEST-004 through TEST-007 test [FR-006] - plugin ID add/validate
@@ -172,15 +210,12 @@ describe("WhitelistSettings", () => {
 	// AICODE-NOTE: TEST-013 tests [FR-003, FR-005] - showCompliantIndicator toggle persistence
 	describe("showCompliantIndicator toggle", () => {
 		it("TEST-013: toggling showCompliantIndicator from false to true persists", () => {
-			// Start with defaults (showCompliantIndicator: false)
 			const settings: WhitelistSettings = { ...DEFAULT_SETTINGS };
 			expect(settings.showCompliantIndicator).toBe(false);
 
-			// Toggle to true
 			settings.showCompliantIndicator = true;
 			expect(settings.showCompliantIndicator).toBe(true);
 
-			// After save/load cycle, mergeSettings preserves the value
 			const reloaded = mergeSettings(settings);
 			expect(reloaded.showCompliantIndicator).toBe(true);
 		});

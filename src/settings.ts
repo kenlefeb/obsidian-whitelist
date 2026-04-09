@@ -32,19 +32,31 @@ export const DEFAULT_SETTINGS: WhitelistSettings = {
 	showCompliantIndicator: DEFAULT_SHOW_COMPLIANT,
 };
 
-// AICODE-NOTE: IMPL-001 implements [FR-001, FR-002, FR-004] - merge loaded data with defaults
+// AICODE-NOTE: IMPL-001/011 implements [FR-001, FR-002, FR-004] - merge loaded data with defaults
+// AICODE-NOTE: Only picks known WhitelistSettings fields to strip unknown properties from data.json
 /**
  * Merges partially loaded settings with defaults.
- * Handles null/undefined input, missing fields, and empty notificationDirectory.
+ * Handles null/undefined input, missing fields, empty notificationDirectory,
+ * and extra unknown fields (stripped).
  */
 export function mergeSettings(
 	loaded: Partial<WhitelistSettings> | null | undefined,
 ): WhitelistSettings {
-	const merged: WhitelistSettings = Object.assign(
-		{},
-		DEFAULT_SETTINGS,
-		loaded ?? {},
-	);
+	const data = loaded ?? {};
+	const merged: WhitelistSettings = {
+		whitelist: Array.isArray(data.whitelist)
+			? data.whitelist
+			: DEFAULT_SETTINGS.whitelist,
+		blacklist: Array.isArray(data.blacklist)
+			? data.blacklist
+			: DEFAULT_SETTINGS.blacklist,
+		notificationDirectory: typeof data.notificationDirectory === "string"
+			? data.notificationDirectory
+			: DEFAULT_SETTINGS.notificationDirectory,
+		showCompliantIndicator: typeof data.showCompliantIndicator === "boolean"
+			? data.showCompliantIndicator
+			: DEFAULT_SETTINGS.showCompliantIndicator,
+	};
 	// FR-004: empty notification directory falls back to default
 	if (!merged.notificationDirectory || merged.notificationDirectory.trim() === "") {
 		merged.notificationDirectory = DEFAULT_NOTIFICATION_DIR;
