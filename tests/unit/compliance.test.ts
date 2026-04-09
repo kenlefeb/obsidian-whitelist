@@ -87,4 +87,46 @@ describe("runComplianceScan", () => {
 			});
 		});
 	});
+
+	// AICODE-NOTE: TEST-003 tests [FR-005] - blacklist precedence over whitelist
+	describe("US3: Blacklist Precedence", () => {
+		it("TEST-003: plugin on both lists gets exactly one 'on_blacklist' violation", () => {
+			const settings = makeSettings({
+				whitelist: ["pluginA"],
+				blacklist: ["pluginA"],
+			});
+			const manifests = makeManifests("pluginA");
+
+			const result = runComplianceScan(settings, manifests, SELF_ID);
+
+			expect(result.compliant).toBe(false);
+			// Must be exactly 1 violation, not 2 (no double-flagging)
+			expect(result.violations).toHaveLength(1);
+			expect(result.violations[0]).toEqual({
+				pluginId: "pluginA",
+				pluginName: "Plugin pluginA",
+				reason: "on_blacklist",
+			});
+		});
+
+		it("TEST-003b: blacklisted plugin not on whitelist gets only 'on_blacklist'", () => {
+			// pluginX is on blacklist but NOT on whitelist
+			// Should get only on_blacklist, not both on_blacklist AND not_on_whitelist
+			const settings = makeSettings({
+				whitelist: ["pluginA"],
+				blacklist: ["pluginX"],
+			});
+			const manifests = makeManifests("pluginA", "pluginX");
+
+			const result = runComplianceScan(settings, manifests, SELF_ID);
+
+			expect(result.compliant).toBe(false);
+			expect(result.violations).toHaveLength(1);
+			expect(result.violations[0]).toEqual({
+				pluginId: "pluginX",
+				pluginName: "Plugin pluginX",
+				reason: "on_blacklist",
+			});
+		});
+	});
 });

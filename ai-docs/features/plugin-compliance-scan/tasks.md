@@ -46,7 +46,7 @@ TDD-structured implementation tasks for the plugin-compliance-scan feature. Impl
 - Constants: ViolationReason.on_blacklist
 
 #### RED Phase
-- [ ] TEST-003 [US3] Test that a plugin on both whitelist and blacklist is flagged with reason "on_blacklist" (blacklist precedence) in `tests/unit/compliance.test.ts`
+- [x] TEST-003 [US3] Test that a plugin on both whitelist and blacklist is flagged with reason "on_blacklist" (blacklist precedence) in `tests/unit/compliance.test.ts`
 
 #### GREEN Phase
 - [ ] IMPL-003 [US3] Ensure blacklist check runs before/overrides whitelist in `runComplianceScan()` in `src/compliance.ts`
