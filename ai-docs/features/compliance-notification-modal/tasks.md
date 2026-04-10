@@ -47,7 +47,7 @@ TDD-structured implementation tasks for the compliance-notification-modal featur
 - Requirements: FR-007
 
 #### RED Phase
-- [ ] TEST-004 [US3] Test that empty string justification is accepted (trimmed to empty) in `tests/unit/compliance-modal.test.ts`
+- [x] TEST-004 [US3] Test that empty string justification is accepted (trimmed to empty) in `tests/unit/compliance-modal.test.ts`
 
 #### GREEN Phase
 - [ ] IMPL-004 [US3] Verify submit handler accepts empty justification (may already pass from IMPL-003)
