@@ -54,6 +54,9 @@ export class ComplianceModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
+		// Hide the default close button — this modal is blocking (FR-006)
+		this.modalEl.addClass("compliance-modal");
+
 		// Header: MODAL_TITLE + violation count (FR-001, UX-001)
 		contentEl.createEl("h2", { text: MODAL_TITLE });
 
@@ -69,11 +72,11 @@ export class ComplianceModal extends Modal {
 		const listEl = contentEl.createDiv({ cls: "compliance-violation-list" });
 		for (const violation of this.violations) {
 			const itemEl = listEl.createDiv({ cls: "compliance-violation-item" });
-			itemEl.createEl("span", {
+			itemEl.createDiv({
 				cls: "compliance-violation-name",
 				text: violation.pluginName,
 			});
-			itemEl.createEl("span", {
+			itemEl.createDiv({
 				cls: "compliance-violation-reason",
 				text: REASON_DISPLAY_TEXT[violation.reason],
 			});
