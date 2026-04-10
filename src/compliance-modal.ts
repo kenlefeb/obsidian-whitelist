@@ -82,7 +82,7 @@ export class ComplianceModal extends Modal {
 		// Justification textarea (FR-004)
 		const textarea = contentEl.createEl("textarea", {
 			cls: "compliance-justification-input",
-		}) as HTMLTextAreaElement;
+		});
 		textarea.placeholder = JUSTIFICATION_PLACEHOLDER;
 		textarea.rows = 4;
 		this.textareaEl = textarea;

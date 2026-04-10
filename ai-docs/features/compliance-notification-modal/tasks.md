@@ -7,7 +7,7 @@ TDD-structured implementation tasks for the compliance-notification-modal featur
 
 - [x] INIT-001 Create `src/compliance-modal.ts` with ComplianceModal class stub extending Modal, and `showComplianceModal(app, violations)` function stub in `src/compliance-modal.ts`
 - [x] INIT-002 Create `tests/unit/compliance-modal.test.ts` test file with imports
-- [ ] INIT-003 Define REASON_DISPLAY_TEXT, MODAL_TITLE, SUBMIT_BUTTON_LABEL, JUSTIFICATION_PLACEHOLDER constants per data-model.md in `src/compliance-modal.ts`
+- [x] INIT-003 Define REASON_DISPLAY_TEXT, MODAL_TITLE, SUBMIT_BUTTON_LABEL, JUSTIFICATION_PLACEHOLDER constants per data-model.md in `src/compliance-modal.ts`
 
 ## Phase 2: User Story 1 - Show Violations on Boot (P1)
 
@@ -50,7 +50,7 @@ TDD-structured implementation tasks for the compliance-notification-modal featur
 - [x] TEST-004 [US3] Test that empty string justification is accepted (trimmed to empty) in `tests/unit/compliance-modal.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-004 [US3] Verify submit handler accepts empty justification (may already pass from IMPL-003)
+- [x] IMPL-004 [US3] Verify submit handler accepts empty justification (may already pass from IMPL-003)
 
 ## Phase 5: User Story 4 - Block Dismissal (P2)
 
@@ -63,7 +63,7 @@ TDD-structured implementation tasks for the compliance-notification-modal featur
 - [x] TEST-005 [US4] Test that ComplianceModal has a close override mechanism (submitted flag) in `tests/unit/compliance-modal.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-005 [US4] Override close() in ComplianceModal: only call super.close() when submitted flag is true in `src/compliance-modal.ts`
+- [x] IMPL-005 [US4] Override close() in ComplianceModal: only call super.close() when submitted flag is true in `src/compliance-modal.ts`
 
 ## Phase 6: User Story 5 - No Modal When Compliant (P2)
 
@@ -72,10 +72,10 @@ TDD-structured implementation tasks for the compliance-notification-modal featur
 - Requirements: FR-008
 
 #### RED Phase
-- [ ] TEST-006 [US5] Test that showComplianceModal is not called when violations array is empty (guard in caller) in `tests/unit/compliance-modal.test.ts`
+- [x] TEST-006 [US5] Test that showComplianceModal is not called when violations array is empty (guard in caller) in `tests/unit/compliance-modal.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-006 [US5] Verify guard logic — showComplianceModal only called when violations.length > 0 (implemented in main.ts integration)
+- [x] IMPL-006 [US5] Verify guard logic — showComplianceModal only called when violations.length > 0 (implemented in main.ts integration)
 
 ## Phase 7: User Story 6 - Re-open from Status Bar (P3)
 
@@ -84,10 +84,10 @@ TDD-structured implementation tasks for the compliance-notification-modal featur
 - Requirements: FR-005 (re-usable function)
 
 #### RED Phase
-- [ ] TEST-007 [US6] Test that showComplianceModal can be called multiple times creating fresh modal instances in `tests/unit/compliance-modal.test.ts`
+- [x] TEST-007 [US6] Test that showComplianceModal can be called multiple times creating fresh modal instances in `tests/unit/compliance-modal.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-007 [US6] Verify showComplianceModal creates new ComplianceModal instance each call (may already pass)
+- [x] IMPL-007 [US6] Verify showComplianceModal creates new ComplianceModal instance each call (may already pass)
 
 ## Phase 8: Integration
 
@@ -97,10 +97,10 @@ TDD-structured implementation tasks for the compliance-notification-modal featur
 - States: hidden → displaying → submitted → hidden
 
 #### RED Phase
-- [ ] TEST-008 [US1] Test that ComplianceModal and showComplianceModal are importable and have correct type signatures in `tests/unit/compliance-modal.test.ts`
+- [x] TEST-008 [US1] Test that ComplianceModal and showComplianceModal are importable and have correct type signatures in `tests/unit/compliance-modal.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-008 [US1] Integrate into WhitelistPlugin.onload() in `src/main.ts`: after compliance scan, if non-compliant, await showComplianceModal(app, violations), store justification on plugin instance
+- [x] IMPL-008 [US1] Integrate into WhitelistPlugin.onload() in `src/main.ts`: after compliance scan, if non-compliant, await showComplianceModal(app, violations), store justification on plugin instance
 
 ## Execution Order
 

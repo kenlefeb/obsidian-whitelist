@@ -3,6 +3,7 @@ import {
 	type ComplianceResult,
 	runComplianceScan,
 } from "./compliance.js";
+import { showComplianceModal } from "./compliance-modal.js";
 import {
 	DEFAULT_SETTINGS,
 	WhitelistSettings,
@@ -32,6 +33,10 @@ export default class WhitelistPlugin extends Plugin {
 	// AICODE-NOTE: IMPL-010 implements [FR-008] - compliance scan result stored on plugin instance
 	complianceResult: ComplianceResult | null = null;
 
+	// AICODE-NOTE: IMPL-008 implements [FR-005] - user-submitted justification stored on plugin instance
+	// Populated after showComplianceModal resolves; null when compliant or modal not yet submitted.
+	justification: string | null = null;
+
 	async onload() {
 		console.debug("Loading plugin");
 		await this.loadSettings();
@@ -41,12 +46,29 @@ export default class WhitelistPlugin extends Plugin {
 		// Uses onLayoutReady to ensure app.plugins.manifests is populated
 		const internalApp = this.app as unknown as ObsidianInternalApp;
 		internalApp.workspace.onLayoutReady(() => {
-			this.complianceResult = runComplianceScan(
-				this.settings,
-				internalApp.plugins.manifests,
-				this.manifest.id,
-			);
+			void this.runBootComplianceFlow(internalApp);
 		});
+	}
+
+	// AICODE-NOTE: IMPL-008 implements [FR-001, FR-008] - boot-time scan + modal flow
+	// Extracted into async helper so onLayoutReady callback stays synchronous and
+	// the promise chain is explicit. Guard on !compliant satisfies FR-008 (IMPL-006).
+	private async runBootComplianceFlow(
+		internalApp: ObsidianInternalApp,
+	): Promise<void> {
+		this.complianceResult = runComplianceScan(
+			this.settings,
+			internalApp.plugins.manifests,
+			this.manifest.id,
+		);
+
+		// FR-008: only show modal when non-compliant (IMPL-006 guard)
+		if (!this.complianceResult.compliant) {
+			this.justification = await showComplianceModal(
+				this.app,
+				this.complianceResult.violations,
+			);
+		}
 	}
 
 	onunload() {
