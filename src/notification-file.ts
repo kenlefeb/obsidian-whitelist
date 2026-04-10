@@ -88,7 +88,7 @@ export function buildNotificationFilename(_date: Date): string {
  * Handles write failures gracefully via Notice + console.error — never throws (FR-005, UX-001).
  */
 // AICODE-NOTE: IMPL-002 implements [FR-001, FR-006] - writes JSON event via adapter
-// AICODE-TODO: IMPL-004 (Phase 4) - recursive mkdir when directory missing
+// AICODE-NOTE: IMPL-004 implements [FR-004] - recursive mkdir when directory missing
 // AICODE-TODO: IMPL-006 (Phase 5) - use buildNotificationFilename for unique paths
 // AICODE-TODO: IMPL-008 (Phase 7) - error handling via try/catch + Notice
 export async function writeComplianceNotification(
@@ -97,11 +97,18 @@ export async function writeComplianceNotification(
 	violations: Violation[],
 	justification: string,
 ): Promise<void> {
+	const adapter = app.vault.adapter;
+
+	const exists = await adapter.exists(directory);
+	if (!exists) {
+		await adapter.mkdir(directory);
+	}
+
 	const event = buildComplianceEvent(app.vault.getName(), violations, justification);
 	// AICODE-NOTE: inline filename in IMPL-002 — replaced by buildNotificationFilename in IMPL-006
 	const sanitized = event.timestamp.replace(/[:.]/g, "-");
 	const filename = `${FILENAME_PREFIX}${sanitized}${FILENAME_EXTENSION}`;
 	const path = `${directory}/${filename}`;
 	const content = JSON.stringify(event, null, JSON_INDENT);
-	await app.vault.adapter.write(path, content);
+	await adapter.write(path, content);
 }

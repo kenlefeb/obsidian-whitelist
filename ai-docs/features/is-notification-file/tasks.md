@@ -54,11 +54,11 @@ TDD-structured implementation tasks for the is-notification-file feature. Writes
 - Requirements: FR-004
 
 #### RED Phase
-- [ ] TEST-006 [US3] Test that `writeComplianceNotification` calls `adapter.mkdir` when `adapter.exists` returns false in `tests/unit/notification-file.test.ts`
-- [ ] TEST-007 [US3] Test that `writeComplianceNotification` does NOT call `adapter.mkdir` when `adapter.exists` returns true in `tests/unit/notification-file.test.ts`
+- [x] \1 [US3] Test that `writeComplianceNotification` calls `adapter.mkdir` when `adapter.exists` returns false in `tests/unit/notification-file.test.ts`
+- [x] \1 [US3] Test that `writeComplianceNotification` does NOT call `adapter.mkdir` when `adapter.exists` returns true in `tests/unit/notification-file.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-004 [US3] Implement directory existence check and mkdir logic in `writeComplianceNotification` in `src/notification-file.ts`
+- [x] \1 [US3] Implement directory existence check and mkdir logic in `writeComplianceNotification` in `src/notification-file.ts`
 
 ## Phase 5: User Story 4 - Unique Filenames (P2)
 

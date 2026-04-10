@@ -101,22 +101,15 @@ describe("writeComplianceNotification", () => {
 		const [, content] = writeSpy.mock.calls[0];
 		const parsed = JSON.parse(content);
 
-		// Top-level fields
 		expect(parsed).toHaveProperty("timestamp");
 		expect(parsed).toHaveProperty("vaultName");
 		expect(parsed).toHaveProperty("violations");
 		expect(parsed).toHaveProperty("justification");
 
-		// Timestamp is valid ISO 8601
 		expect(parsed.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
-
-		// Vault name populated from app.vault.getName()
 		expect(parsed.vaultName).toBe("test-vault");
-
-		// Justification stored verbatim
 		expect(parsed.justification).toBe("needed for work");
 
-		// Each violation exposes required fields
 		expect(Array.isArray(parsed.violations)).toBe(true);
 		expect(parsed.violations).toHaveLength(2);
 		for (const v of parsed.violations) {
@@ -126,6 +119,31 @@ describe("writeComplianceNotification", () => {
 		}
 		expect(parsed.violations[0]).toEqual(sampleViolations[0]);
 		expect(parsed.violations[1]).toEqual(sampleViolations[1]);
+	});
+
+	// AICODE-NOTE: TEST-006 tests [FR-004] - mkdir invoked when directory missing
+	it("TEST-006 calls adapter.mkdir when directory does not exist", async () => {
+		const existsSpy = vi.spyOn(app.vault.adapter, "exists").mockResolvedValue(false);
+		const mkdirSpy = vi.spyOn(app.vault.adapter, "mkdir").mockResolvedValue(undefined);
+		vi.spyOn(app.vault.adapter, "write").mockResolvedValue(undefined);
+
+		await writeComplianceNotification(app, "compliance", sampleViolations, "because");
+
+		expect(existsSpy).toHaveBeenCalledWith("compliance");
+		expect(mkdirSpy).toHaveBeenCalledTimes(1);
+		expect(mkdirSpy).toHaveBeenCalledWith("compliance");
+	});
+
+	// AICODE-NOTE: TEST-007 tests [FR-004] - mkdir skipped when directory exists
+	it("TEST-007 does NOT call adapter.mkdir when directory exists", async () => {
+		const existsSpy = vi.spyOn(app.vault.adapter, "exists").mockResolvedValue(true);
+		const mkdirSpy = vi.spyOn(app.vault.adapter, "mkdir").mockResolvedValue(undefined);
+		vi.spyOn(app.vault.adapter, "write").mockResolvedValue(undefined);
+
+		await writeComplianceNotification(app, "compliance", sampleViolations, "because");
+
+		expect(existsSpy).toHaveBeenCalledWith("compliance");
+		expect(mkdirSpy).not.toHaveBeenCalled();
 	});
 });
 
