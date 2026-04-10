@@ -11,6 +11,7 @@ import {
 	WhitelistSettingTab,
 	mergeSettings,
 } from "./settings.js";
+import { renderStatusBarIndicator } from "./status-bar.js";
 
 // AICODE-NOTE: Enforcer class removed per plan.md -- belongs to plugin-compliance-scan feature.
 // WhitelistPlugin now manages settings persistence and compliance scanning.
@@ -63,6 +64,10 @@ export default class WhitelistPlugin extends Plugin {
 	// AICODE-NOTE: IMPL-010 (is-notification-file) implements [FR-001, FR-006] -
 	// after the compliance modal resolves, persist the event via writeComplianceNotification.
 	// writeComplianceNotification never throws (try/catch + Notice), so no additional guard is needed here.
+	// AICODE-NOTE: status-bar-indicator IMPL-003 implements [FR-001] - render the status
+	// bar indicator immediately after complianceResult is assigned, before the modal flow
+	// opens. The indicator reflects the current scan state regardless of whether the
+	// modal path runs (compliant vaults skip the modal but still need the indicator).
 	private async runBootComplianceFlow(
 		internalApp: ObsidianInternalApp,
 	): Promise<void> {
@@ -71,6 +76,9 @@ export default class WhitelistPlugin extends Plugin {
 			internalApp.plugins.manifests,
 			this.manifest.id,
 		);
+
+		// status-bar-indicator IMPL-003: render status bar as soon as the scan result is known.
+		renderStatusBarIndicator(this);
 
 		// FR-008: only show modal when non-compliant (IMPL-006 guard)
 		if (!this.complianceResult.compliant) {
@@ -98,7 +106,12 @@ export default class WhitelistPlugin extends Plugin {
 		this.settings = mergeSettings(loaded);
 	}
 
+	// AICODE-NOTE: status-bar-indicator IMPL-006 implements [FR-003, FR-004] - after settings
+	// persist, re-render the status bar so toggling showCompliantIndicator takes effect
+	// immediately. renderStatusBarIndicator detaches the previous element first, so the
+	// transition between compliant_visible and compliant_hidden (and back) is safe.
 	async saveSettings() {
 		await this.saveData(this.settings);
+		renderStatusBarIndicator(this);
 	}
 }

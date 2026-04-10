@@ -16,8 +16,12 @@ export class Plugin {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	addSettingTab(_tab: PluginSettingTab): void {}
 
-	addStatusBarItem(): { setText: (text: string) => void } {
-		return { setText: () => {} };
+	// AICODE-NOTE: status-bar-indicator - addStatusBarItem returns a rich mock element
+	// so tests can inspect class list, attrs, text, event listeners, and detach state.
+	// Production code treats it as HTMLElement; tests cast back to MockStatusBarElement
+	// via asStatusBarMock() to inspect internals.
+	addStatusBarItem(): HTMLElement {
+		return createStatusBarMockElement() as unknown as HTMLElement;
 	}
 
 	async loadData(): Promise<unknown> {
@@ -144,6 +148,142 @@ function createMockElement(): MockElement {
 		focus: () => {},
 	};
 	return el;
+}
+
+// AICODE-NOTE: status-bar-indicator — rich mock element for the status bar item.
+// Tracks text content, class list, attribute map, event listeners, detach state,
+// child spans, inline style map, and tabIndex so tests can inspect every render
+// branch of renderStatusBarIndicator. Cast via asStatusBarMock(plugin.statusBarItem)
+// in tests.
+export interface MockStatusBarElement {
+	_text: string;
+	_classes: Set<string>;
+	_attrs: Record<string, string>;
+	_events: Record<string, Array<(e: unknown) => void>>;
+	_detached: boolean;
+	_children: MockStatusBarElement[];
+	_style: Record<string, string>;
+	tabIndex: number;
+	setText(text: string): MockStatusBarElement;
+	addClass(...classes: string[]): void;
+	removeClass(...classes: string[]): void;
+	setAttr(name: string, value: string | number | boolean | null): void;
+	setAttribute(name: string, value: string): void;
+	getAttribute(name: string): string | null;
+	addEventListener(type: string, handler: (e: unknown) => void): void;
+	removeEventListener(type: string, handler: (e: unknown) => void): void;
+	detach(): void;
+	createSpan(options?: Record<string, unknown>): MockStatusBarElement;
+	createEl(tag: string, options?: Record<string, unknown>): MockStatusBarElement;
+	createDiv(options?: Record<string, unknown>): MockStatusBarElement;
+	empty(): void;
+	style: Record<string, string>;
+	/** Fire a registered event handler — test helper. */
+	_fire(type: string, event?: unknown): void;
+}
+
+/**
+ * Factory for a rich status bar mock element. Each call returns a fresh instance
+ * with isolated tracking state.
+ */
+export function createStatusBarMockElement(): MockStatusBarElement {
+	const classes = new Set<string>();
+	const attrs: Record<string, string> = {};
+	const events: Record<string, Array<(e: unknown) => void>> = {};
+	const children: MockStatusBarElement[] = [];
+	const styleMap: Record<string, string> = {};
+
+	const el: MockStatusBarElement = {
+		_text: "",
+		_classes: classes,
+		_attrs: attrs,
+		_events: events,
+		_detached: false,
+		_children: children,
+		_style: styleMap,
+		tabIndex: -1,
+		style: styleMap,
+		setText(text: string): MockStatusBarElement {
+			el._text = text;
+			return el;
+		},
+		addClass(...cls: string[]): void {
+			for (const c of cls) classes.add(c);
+		},
+		removeClass(...cls: string[]): void {
+			for (const c of cls) classes.delete(c);
+		},
+		setAttr(name: string, value: string | number | boolean | null): void {
+			attrs[name] = value === null ? "" : String(value);
+		},
+		setAttribute(name: string, value: string): void {
+			attrs[name] = value;
+		},
+		getAttribute(name: string): string | null {
+			return name in attrs ? attrs[name] : null;
+		},
+		addEventListener(type: string, handler: (e: unknown) => void): void {
+			if (!events[type]) events[type] = [];
+			events[type].push(handler);
+		},
+		removeEventListener(type: string, handler: (e: unknown) => void): void {
+			const list = events[type];
+			if (!list) return;
+			const idx = list.indexOf(handler);
+			if (idx >= 0) list.splice(idx, 1);
+		},
+		detach(): void {
+			el._detached = true;
+		},
+		createSpan(_options?: Record<string, unknown>): MockStatusBarElement {
+			const child = createStatusBarMockElement();
+			children.push(child);
+			return child;
+		},
+		createEl(_tag: string, _options?: Record<string, unknown>): MockStatusBarElement {
+			const child = createStatusBarMockElement();
+			children.push(child);
+			return child;
+		},
+		createDiv(_options?: Record<string, unknown>): MockStatusBarElement {
+			const child = createStatusBarMockElement();
+			children.push(child);
+			return child;
+		},
+		empty(): void {
+			children.length = 0;
+			el._text = "";
+		},
+		_fire(type: string, event?: unknown): void {
+			const list = events[type];
+			if (!list) return;
+			for (const h of list.slice()) h(event);
+		},
+	};
+	return el;
+}
+
+/**
+ * Cast an HTMLElement (as returned by addStatusBarItem in the mock) back to
+ * MockStatusBarElement for test inspection.
+ */
+export function asStatusBarMock(el: unknown): MockStatusBarElement {
+	return el as unknown as MockStatusBarElement;
+}
+
+// AICODE-NOTE: status-bar-indicator — module-level setIcon mock.
+// Production code imports `setIcon` from "obsidian" (real Obsidian exports it as
+// a module-level function); this mock records every call so tests can assert
+// the correct icon name was applied to the correct element. Tests should call
+// resetSetIcon() in beforeEach.
+export const setIconCalls: Array<{ el: unknown; iconId: string }> = [];
+
+export function setIcon(parent: unknown, iconId: string): void {
+	setIconCalls.push({ el: parent, iconId });
+}
+
+export function resetSetIcon(): void {
+	setIconCalls.length = 0;
 }
 
 // AICODE-NOTE: Modal mock added for compliance-notification-modal feature (INIT-001)

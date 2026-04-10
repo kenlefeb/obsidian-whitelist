@@ -51,3 +51,39 @@
 .modal.compliance-modal .modal-close-button {
 	display: none;
 }
+
+/* -------------------------------------------------------------------------- */
+/* status-bar-indicator IMPL-011                                               */
+/*                                                                              */
+/* Visual contract:                                                            */
+/*  - MIN_CONTRAST_RATIO ≥ 4.5:1 against --status-bar-background (WCAG AA)    */
+/*  - MOBILE_TOUCH_TARGET_MIN_PX = 44 CSS px via min-height / min-width       */
+/*  - Warning state uses Obsidian's --text-warning so contrast is theme-safe  */
+/*                                                                              */
+/* See data-model.md Constants table and ux.md Accessibility Standards.       */
+/* -------------------------------------------------------------------------- */
+
+.obsidian-whitelist-status-noncompliant {
+	color: var(--text-warning);
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25em;
+	padding: 0 0.5em;
+	min-height: 44px;
+	min-width: 44px;
+}
+
+.obsidian-whitelist-status-noncompliant:focus-visible {
+	outline: 2px solid var(--text-warning);
+	outline-offset: 2px;
+}
+
+.obsidian-whitelist-status-compliant {
+	color: var(--text-muted);
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25em;
+	padding: 0 0.5em;
+	min-height: 44px;
+}
