@@ -76,9 +76,10 @@ export function buildComplianceEvent(
  * @param date - Event timestamp
  * @returns Filename in form `compliance-<sanitized-timestamp>.json`
  */
-// AICODE-TODO: IMPL-005 - implement per TEST-008/TEST-009 in Phase 5
-export function buildNotificationFilename(_date: Date): string {
-	throw new Error("Not implemented — see IMPL-005");
+// AICODE-NOTE: IMPL-005 implements [FR-003] - sanitize ISO timestamp for filesystem safety
+export function buildNotificationFilename(date: Date): string {
+	const sanitized = date.toISOString().replace(/[:.]/g, "-");
+	return `${FILENAME_PREFIX}${sanitized}${FILENAME_EXTENSION}`;
 }
 
 /**
@@ -89,7 +90,7 @@ export function buildNotificationFilename(_date: Date): string {
  */
 // AICODE-NOTE: IMPL-002 implements [FR-001, FR-006] - writes JSON event via adapter
 // AICODE-NOTE: IMPL-004 implements [FR-004] - recursive mkdir when directory missing
-// AICODE-TODO: IMPL-006 (Phase 5) - use buildNotificationFilename for unique paths
+// AICODE-NOTE: IMPL-006 implements [FR-003] - uses buildNotificationFilename for unique paths
 // AICODE-TODO: IMPL-008 (Phase 7) - error handling via try/catch + Notice
 export async function writeComplianceNotification(
 	app: App,
@@ -105,9 +106,7 @@ export async function writeComplianceNotification(
 	}
 
 	const event = buildComplianceEvent(app.vault.getName(), violations, justification);
-	// AICODE-NOTE: inline filename in IMPL-002 — replaced by buildNotificationFilename in IMPL-006
-	const sanitized = event.timestamp.replace(/[:.]/g, "-");
-	const filename = `${FILENAME_PREFIX}${sanitized}${FILENAME_EXTENSION}`;
+	const filename = buildNotificationFilename(new Date(event.timestamp));
 	const path = `${directory}/${filename}`;
 	const content = JSON.stringify(event, null, JSON_INDENT);
 	await adapter.write(path, content);

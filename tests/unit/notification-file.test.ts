@@ -50,6 +50,37 @@ describe("buildComplianceEvent", () => {
 	});
 });
 
+describe("buildNotificationFilename", () => {
+	// AICODE-NOTE: TEST-008 tests [FR-003] - sanitized timestamp in compliance-<ts>.json format
+	it("TEST-008 returns compliance-<sanitized-timestamp>.json with colons and dots replaced by hyphens", () => {
+		const date = new Date("2026-04-09T18:35:25.123Z");
+		const filename = buildNotificationFilename(date);
+
+		expect(filename).toBe("compliance-2026-04-09T18-35-25-123Z.json");
+		expect(filename.startsWith(FILENAME_PREFIX)).toBe(true);
+		expect(filename.endsWith(FILENAME_EXTENSION)).toBe(true);
+		// No filesystem-unsafe characters
+		expect(filename).not.toContain(":");
+		// Only the single "." before the extension remains
+		expect(filename.match(/\./g)).toHaveLength(1);
+	});
+
+	// AICODE-NOTE: TEST-009 tests [FR-003] - unique filenames per distinct timestamp
+	it("TEST-009 returns different filenames for different dates", () => {
+		const d1 = new Date("2026-04-09T18:35:25.123Z");
+		const d2 = new Date("2026-04-09T18:35:25.124Z");
+		const d3 = new Date("2026-04-10T00:00:00.000Z");
+
+		const f1 = buildNotificationFilename(d1);
+		const f2 = buildNotificationFilename(d2);
+		const f3 = buildNotificationFilename(d3);
+
+		expect(f1).not.toBe(f2);
+		expect(f2).not.toBe(f3);
+		expect(f1).not.toBe(f3);
+	});
+});
+
 describe("writeComplianceNotification", () => {
 	let app: App;
 
@@ -147,6 +178,4 @@ describe("writeComplianceNotification", () => {
 	});
 });
 
-// AICODE-NOTE: Placeholders to keep unused imports available for later cycles.
-void buildNotificationFilename;
 void ERROR_NOTICE_PREFIX;

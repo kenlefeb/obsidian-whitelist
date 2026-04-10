@@ -68,12 +68,12 @@ TDD-structured implementation tasks for the is-notification-file feature. Writes
 - Constants: FILENAME_PREFIX, FILENAME_EXTENSION
 
 #### RED Phase
-- [ ] TEST-008 [US4] Test that `buildNotificationFilename(date)` returns `compliance-<sanitized-timestamp>.json` with colons and dots replaced by hyphens in `tests/unit/notification-file.test.ts`
-- [ ] TEST-009 [US4] Test that two consecutive `buildNotificationFilename` calls with different dates produce different filenames in `tests/unit/notification-file.test.ts`
+- [x] \1 [US4] Test that `buildNotificationFilename(date)` returns `compliance-<sanitized-timestamp>.json` with colons and dots replaced by hyphens in `tests/unit/notification-file.test.ts`
+- [x] \1 [US4] Test that two consecutive `buildNotificationFilename` calls with different dates produce different filenames in `tests/unit/notification-file.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-005 [US4] Implement `buildNotificationFilename(date)` pure function in `src/notification-file.ts`
-- [ ] IMPL-006 [US4] Use `buildNotificationFilename` in `writeComplianceNotification` for file path construction
+- [x] \1 [US4] Implement `buildNotificationFilename(date)` pure function in `src/notification-file.ts`
+- [x] \1 [US4] Use `buildNotificationFilename` in `writeComplianceNotification` for file path construction
 
 ## Phase 6: User Story 5 - Empty Justification (P3)
 
