@@ -42,10 +42,10 @@ TDD-structured implementation tasks for the is-notification-file feature. Writes
 - Requirements: FR-002
 
 #### RED Phase
-- [ ] TEST-005 [US2] Test that written file contains timestamp, vaultName, violations (with pluginId, pluginName, reason), and justification fields in `tests/unit/notification-file.test.ts`
+- [x] \1 [US2] Test that written file contains timestamp, vaultName, violations (with pluginId, pluginName, reason), and justification fields in `tests/unit/notification-file.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-003 [US2] Verify writeComplianceNotification assembles complete event (may already pass from IMPL-002)
+- [x] \1 [US2] Verify writeComplianceNotification assembles complete event (may already pass from IMPL-002)
 
 ## Phase 4: User Story 3 - Create Directory If Missing (P2)
 

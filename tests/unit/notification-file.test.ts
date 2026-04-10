@@ -71,7 +71,6 @@ describe("writeComplianceNotification", () => {
 		expect(path).toContain(FILENAME_PREFIX);
 		expect(path).toContain(FILENAME_EXTENSION);
 
-		// Content is parseable JSON containing the event
 		const parsed = JSON.parse(content);
 		expect(parsed.vaultName).toBe("test-vault");
 		expect(parsed.justification).toBe("because");
@@ -85,15 +84,48 @@ describe("writeComplianceNotification", () => {
 		await writeComplianceNotification(app, "compliance", sampleViolations, "because");
 
 		const [, content] = writeSpy.mock.calls[0];
-		// 2-space indentation means second line starts with "  \"" (two spaces + quote)
 		const lines = content.split("\n");
 		expect(lines[0]).toBe("{");
 		expect(lines[1]).toMatch(/^ {2}"/);
-		// Assert indent constant is the one in use
 		expect(JSON_INDENT).toBe(2);
-		// Re-serializing the parsed object with JSON_INDENT reproduces content exactly
 		const parsed = JSON.parse(content);
 		expect(JSON.stringify(parsed, null, JSON_INDENT)).toBe(content);
+	});
+
+	// AICODE-NOTE: TEST-005 tests [FR-002] - written file has all required fields populated
+	it("TEST-005 written file contains timestamp, vaultName, violations (with pluginId/pluginName/reason), and justification", async () => {
+		const writeSpy = vi.spyOn(app.vault.adapter, "write").mockResolvedValue(undefined);
+
+		await writeComplianceNotification(app, "compliance", sampleViolations, "needed for work");
+
+		const [, content] = writeSpy.mock.calls[0];
+		const parsed = JSON.parse(content);
+
+		// Top-level fields
+		expect(parsed).toHaveProperty("timestamp");
+		expect(parsed).toHaveProperty("vaultName");
+		expect(parsed).toHaveProperty("violations");
+		expect(parsed).toHaveProperty("justification");
+
+		// Timestamp is valid ISO 8601
+		expect(parsed.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+
+		// Vault name populated from app.vault.getName()
+		expect(parsed.vaultName).toBe("test-vault");
+
+		// Justification stored verbatim
+		expect(parsed.justification).toBe("needed for work");
+
+		// Each violation exposes required fields
+		expect(Array.isArray(parsed.violations)).toBe(true);
+		expect(parsed.violations).toHaveLength(2);
+		for (const v of parsed.violations) {
+			expect(v).toHaveProperty("pluginId");
+			expect(v).toHaveProperty("pluginName");
+			expect(v).toHaveProperty("reason");
+		}
+		expect(parsed.violations[0]).toEqual(sampleViolations[0]);
+		expect(parsed.violations[1]).toEqual(sampleViolations[1]);
 	});
 });
 
