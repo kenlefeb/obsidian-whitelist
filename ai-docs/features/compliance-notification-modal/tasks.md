@@ -34,11 +34,11 @@ TDD-structured implementation tasks for the compliance-notification-modal featur
 - Constants: SUBMIT_BUTTON_LABEL, JUSTIFICATION_PLACEHOLDER
 
 #### RED Phase
-- [ ] TEST-003 [US2] Test that justification text is trimmed before return in `tests/unit/compliance-modal.test.ts`
+- [x] TEST-003 [US2] Test that justification text is trimmed before return in `tests/unit/compliance-modal.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-002 [US2] Add justification textarea with JUSTIFICATION_PLACEHOLDER and submit button with SUBMIT_BUTTON_LABEL to ComplianceModal.onOpen() in `src/compliance-modal.ts`
-- [ ] IMPL-003 [US2] Implement submit handler: set submitted=true, capture trimmed justification, resolve Promise, call close() in `src/compliance-modal.ts`
+- [x] IMPL-002 [US2] Add justification textarea with JUSTIFICATION_PLACEHOLDER and submit button with SUBMIT_BUTTON_LABEL to ComplianceModal.onOpen() in `src/compliance-modal.ts`
+- [x] IMPL-003 [US2] Implement submit handler: set submitted=true, capture trimmed justification, resolve Promise, call close() in `src/compliance-modal.ts`
 
 ## Phase 4: User Story 3 - Empty Justification Allowed (P1)
 
