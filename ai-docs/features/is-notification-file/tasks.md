@@ -118,10 +118,10 @@ TDD-structured implementation tasks for the is-notification-file feature. Writes
 - Requirements: FR-001, FR-006
 
 #### RED Phase
-- [ ] TEST-014 [US1] Test that `writeComplianceNotification` export has correct type signature in `tests/unit/notification-file.test.ts`
+- [x] \1 [US1] Test that `writeComplianceNotification` export has correct type signature in `tests/unit/notification-file.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-010 [US1] Integrate into `WhitelistPlugin.runBootComplianceFlow()` in `src/main.ts`: after showComplianceModal resolves, call `writeComplianceNotification(this.app, this.settings.notificationDirectory, violations, justification)`
+- [x] \1 [US1] Integrate into `WhitelistPlugin.runBootComplianceFlow()` in `src/main.ts`: after showComplianceModal resolves, call `writeComplianceNotification(this.app, this.settings.notificationDirectory, violations, justification)`
 
 ## Execution Order
 

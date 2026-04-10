@@ -229,4 +229,19 @@ describe("writeComplianceNotification", () => {
 	});
 });
 
+// AICODE-NOTE: TEST-014 tests [FR-001, FR-006] - integration-facing type signature
+describe("writeComplianceNotification type signature", () => {
+	it("TEST-014 accepts (app, directory, violations, justification) and returns Promise<void>", () => {
+		// Type-level assertion: the function matches the integration contract expected by main.ts
+		const fn: (
+			app: App,
+			directory: string,
+			violations: Violation[],
+			justification: string,
+		) => Promise<void> = writeComplianceNotification;
+		expect(typeof fn).toBe("function");
+		expect(fn.length).toBe(4);
+	});
+});
+
 void ERROR_NOTICE_PREFIX;

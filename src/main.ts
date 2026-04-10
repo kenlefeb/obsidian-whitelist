@@ -4,6 +4,7 @@ import {
 	runComplianceScan,
 } from "./compliance.js";
 import { showComplianceModal } from "./compliance-modal.js";
+import { writeComplianceNotification } from "./notification-file.js";
 import {
 	DEFAULT_SETTINGS,
 	WhitelistSettings,
@@ -53,6 +54,9 @@ export default class WhitelistPlugin extends Plugin {
 	// AICODE-NOTE: IMPL-008 implements [FR-001, FR-008] - boot-time scan + modal flow
 	// Extracted into async helper so onLayoutReady callback stays synchronous and
 	// the promise chain is explicit. Guard on !compliant satisfies FR-008 (IMPL-006).
+	// AICODE-NOTE: IMPL-010 (is-notification-file) implements [FR-001, FR-006] -
+	// after the compliance modal resolves, persist the event via writeComplianceNotification.
+	// writeComplianceNotification never throws (try/catch + Notice), so no additional guard is needed here.
 	private async runBootComplianceFlow(
 		internalApp: ObsidianInternalApp,
 	): Promise<void> {
@@ -67,6 +71,13 @@ export default class WhitelistPlugin extends Plugin {
 			this.justification = await showComplianceModal(
 				this.app,
 				this.complianceResult.violations,
+			);
+
+			await writeComplianceNotification(
+				this.app,
+				this.settings.notificationDirectory,
+				this.complianceResult.violations,
+				this.justification,
 			);
 		}
 	}
