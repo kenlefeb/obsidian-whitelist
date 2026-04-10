@@ -17,11 +17,11 @@ TDD-structured implementation tasks for the is-notification-file feature. Writes
 - Data entities: ComplianceEvent
 
 #### RED Phase
-- [ ] TEST-001 [US1] Test that `buildComplianceEvent(vaultName, violations, justification)` returns object with timestamp (valid ISO), vaultName, violations array, and justification string in `tests/unit/notification-file.test.ts`
-- [ ] TEST-002 [US1] Test that `buildComplianceEvent` includes empty string justification as-is in `tests/unit/notification-file.test.ts`
+- [x] TEST-001 [US1] Test that `buildComplianceEvent(vaultName, violations, justification)` returns object with timestamp (valid ISO), vaultName, violations array, and justification string in `tests/unit/notification-file.test.ts`
+- [x] TEST-002 [US1] Test that `buildComplianceEvent` includes empty string justification as-is in `tests/unit/notification-file.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-001 [US1] Implement `buildComplianceEvent(vaultName, violations, justification)` pure function in `src/notification-file.ts`
+- [x] IMPL-001 [US1] Implement `buildComplianceEvent(vaultName, violations, justification)` pure function in `src/notification-file.ts`
 
 ### TDD Cycle 2: Write Notification File
 **Coverage**:

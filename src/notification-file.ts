@@ -1,6 +1,6 @@
 /**
  * AICODE-NOTE: INIT-001 creates ComplianceEvent interface, constants, and function stubs
- * per data-model.md. RED/GREEN phases added in Phase 2+.
+ * per data-model.md. Implementation added in Phase 2+ TDD cycles.
  *
  * Module responsibility: write compliance events as JSON files to vault-relative directory.
  * Separates pure functions (buildComplianceEvent, buildNotificationFilename) from
@@ -57,13 +57,18 @@ export interface ComplianceEvent {
  * @param justification - User-provided justification (may be empty string)
  * @returns ComplianceEvent with current ISO timestamp
  */
-// AICODE-TODO: IMPL-001 - implement per TEST-001/TEST-002 in Phase 2
+// AICODE-NOTE: IMPL-001 implements [FR-001, FR-002] - pure constructor for ComplianceEvent
 export function buildComplianceEvent(
-	_vaultName: string,
-	_violations: Violation[],
-	_justification: string,
+	vaultName: string,
+	violations: Violation[],
+	justification: string,
 ): ComplianceEvent {
-	throw new Error("Not implemented — see IMPL-001");
+	return {
+		timestamp: new Date().toISOString(),
+		vaultName,
+		violations,
+		justification,
+	};
 }
 
 /**
