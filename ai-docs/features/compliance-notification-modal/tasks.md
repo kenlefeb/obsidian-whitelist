@@ -60,7 +60,7 @@ TDD-structured implementation tasks for the compliance-notification-modal featur
 - States: displaying → displaying (blocked close attempt)
 
 #### RED Phase
-- [ ] TEST-005 [US4] Test that ComplianceModal has a close override mechanism (submitted flag) in `tests/unit/compliance-modal.test.ts`
+- [x] TEST-005 [US4] Test that ComplianceModal has a close override mechanism (submitted flag) in `tests/unit/compliance-modal.test.ts`
 
 #### GREEN Phase
 - [ ] IMPL-005 [US4] Override close() in ComplianceModal: only call super.close() when submitted flag is true in `src/compliance-modal.ts`
