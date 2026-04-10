@@ -6,7 +6,7 @@ TDD-structured implementation tasks for the compliance-notification-modal featur
 ## Phase 1: Core Infrastructure
 
 - [x] INIT-001 Create `src/compliance-modal.ts` with ComplianceModal class stub extending Modal, and `showComplianceModal(app, violations)` function stub in `src/compliance-modal.ts`
-- [ ] INIT-002 Create `tests/unit/compliance-modal.test.ts` test file with imports
+- [x] INIT-002 Create `tests/unit/compliance-modal.test.ts` test file with imports
 - [ ] INIT-003 Define REASON_DISPLAY_TEXT, MODAL_TITLE, SUBMIT_BUTTON_LABEL, JUSTIFICATION_PLACEHOLDER constants per data-model.md in `src/compliance-modal.ts`
 
 ## Phase 2: User Story 1 - Show Violations on Boot (P1)
@@ -19,11 +19,11 @@ TDD-structured implementation tasks for the compliance-notification-modal featur
 - Constants: REASON_DISPLAY_TEXT, MODAL_TITLE
 
 #### RED Phase
-- [ ] TEST-001 [US1] Test that REASON_DISPLAY_TEXT maps "not_on_whitelist" to "Not on approved list" and "on_blacklist" to "On blocked list" in `tests/unit/compliance-modal.test.ts`
-- [ ] TEST-002 [US1] Test that showComplianceModal returns a Promise in `tests/unit/compliance-modal.test.ts`
+- [x] TEST-001 [US1] Test that REASON_DISPLAY_TEXT maps "not_on_whitelist" to "Not on approved list" and "on_blacklist" to "On blocked list" in `tests/unit/compliance-modal.test.ts`
+- [x] TEST-002 [US1] Test that showComplianceModal returns a Promise in `tests/unit/compliance-modal.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-001 [US1] Implement ComplianceModal.onOpen(): render header with MODAL_TITLE and violation count, violation description paragraph, scrollable violation list with ViolationItems showing plugin name and REASON_DISPLAY_TEXT in `src/compliance-modal.ts`
+- [x] IMPL-001 [US1] Implement ComplianceModal.onOpen(): render header with MODAL_TITLE and violation count, violation description paragraph, scrollable violation list with ViolationItems showing plugin name and REASON_DISPLAY_TEXT in `src/compliance-modal.ts`
 
 ## Phase 3: User Story 2 - Submit Justification (P1)
 
