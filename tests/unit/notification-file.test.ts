@@ -212,6 +212,21 @@ describe("writeComplianceNotification", () => {
 
 		consoleErrorSpy.mockRestore();
 	});
+
+	// AICODE-NOTE: TEST-013 tests [FR-003] - sequential calls produce separate files
+	it("TEST-013 two sequential calls produce separate files with distinct paths", async () => {
+		const writeSpy = vi.spyOn(app.vault.adapter, "write").mockResolvedValue(undefined);
+
+		await writeComplianceNotification(app, "compliance", sampleViolations, "first");
+		// Tiny delay to ensure distinct millisecond timestamps
+		await new Promise((resolve) => setTimeout(resolve, 2));
+		await writeComplianceNotification(app, "compliance", sampleViolations, "second");
+
+		expect(writeSpy).toHaveBeenCalledTimes(2);
+		const path1 = writeSpy.mock.calls[0][0];
+		const path2 = writeSpy.mock.calls[1][0];
+		expect(path1).not.toBe(path2);
+	});
 });
 
 void ERROR_NOTICE_PREFIX;

@@ -106,10 +106,10 @@ TDD-structured implementation tasks for the is-notification-file feature. Writes
 - Requirements: FR-003
 
 #### RED Phase
-- [ ] TEST-013 [US1] Test that two sequential `writeComplianceNotification` calls produce separate files in `tests/unit/notification-file.test.ts`
+- [x] \1 [US1] Test that two sequential `writeComplianceNotification` calls produce separate files in `tests/unit/notification-file.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-009 [US1] Verify separate files per event (may already pass from IMPL-005/006)
+- [x] \1 [US1] Verify separate files per event (may already pass from IMPL-005/006)
 
 ## Phase 8: Integration
 
