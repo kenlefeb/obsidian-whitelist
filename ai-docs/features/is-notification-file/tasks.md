@@ -82,10 +82,10 @@ TDD-structured implementation tasks for the is-notification-file feature. Writes
 - Requirements: FR-002
 
 #### RED Phase
-- [ ] TEST-010 [US5] Test that `writeComplianceNotification` with empty justification writes valid JSON with empty string field in `tests/unit/notification-file.test.ts`
+- [x] \1 [US5] Test that `writeComplianceNotification` with empty justification writes valid JSON with empty string field in `tests/unit/notification-file.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-007 [US5] Verify writeComplianceNotification handles empty justification (may already pass)
+- [x] \1 [US5] Verify writeComplianceNotification handles empty justification (may already pass)
 
 ## Phase 7: Edge Cases
 

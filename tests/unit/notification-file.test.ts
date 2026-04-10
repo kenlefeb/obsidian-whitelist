@@ -59,9 +59,7 @@ describe("buildNotificationFilename", () => {
 		expect(filename).toBe("compliance-2026-04-09T18-35-25-123Z.json");
 		expect(filename.startsWith(FILENAME_PREFIX)).toBe(true);
 		expect(filename.endsWith(FILENAME_EXTENSION)).toBe(true);
-		// No filesystem-unsafe characters
 		expect(filename).not.toContain(":");
-		// Only the single "." before the extension remains
 		expect(filename.match(/\./g)).toHaveLength(1);
 	});
 
@@ -175,6 +173,19 @@ describe("writeComplianceNotification", () => {
 
 		expect(existsSpy).toHaveBeenCalledWith("compliance");
 		expect(mkdirSpy).not.toHaveBeenCalled();
+	});
+
+	// AICODE-NOTE: TEST-010 tests [FR-002] - empty justification produces valid JSON with empty string field
+	it("TEST-010 writes valid JSON with empty string justification when justification is empty", async () => {
+		const writeSpy = vi.spyOn(app.vault.adapter, "write").mockResolvedValue(undefined);
+
+		await writeComplianceNotification(app, "compliance", sampleViolations, "");
+
+		expect(writeSpy).toHaveBeenCalledTimes(1);
+		const [, content] = writeSpy.mock.calls[0];
+		const parsed = JSON.parse(content);
+		expect(parsed.justification).toBe("");
+		expect(typeof parsed.justification).toBe("string");
 	});
 });
 
