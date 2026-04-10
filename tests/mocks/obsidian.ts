@@ -28,9 +28,25 @@ export class Plugin {
 	async saveData(_data: unknown): Promise<void> {}
 }
 
+// AICODE-NOTE: INIT-003 (is-notification-file) - Vault adapter mock exposed
+// so tests can spy on write/exists/mkdir via vi.spyOn(app.vault.adapter, "write") etc.
+// Default implementations: write resolves, exists returns true, mkdir resolves.
+// Tests override per-case as needed.
+export interface MockVaultAdapter {
+	write: (path: string, data: string) => Promise<void>;
+	exists: (path: string) => Promise<boolean>;
+	mkdir: (path: string) => Promise<void>;
+}
+
 export class App {
 	vault = {
-		getName: () => "test-vault",
+		getName: (): string => "test-vault",
+		// AICODE-NOTE: INIT-003 - adapter with write/exists/mkdir for notification-file tests
+		adapter: {
+			write: async (_path: string, _data: string): Promise<void> => {},
+			exists: async (_path: string): Promise<boolean> => true,
+			mkdir: async (_path: string): Promise<void> => {},
+		} as MockVaultAdapter,
 	};
 
 	// AICODE-NOTE: IMPL-010 - workspace mock with onLayoutReady for compliance scan integration
@@ -76,9 +92,24 @@ export class Setting {
 	addDropdown(): this { return this; }
 }
 
+// AICODE-NOTE: INIT-003 (is-notification-file) - Notice tracks construction calls
+// so tests can assert the error Notice was shown with ERROR_NOTICE_PREFIX.
+// Access via Notice.instances in tests; call Notice.reset() in beforeEach.
 export class Notice {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	constructor(_message: string, _timeout?: number) {}
+	static instances: Array<{ message: string; timeout?: number }> = [];
+
+	message: string;
+	timeout?: number;
+
+	constructor(message: string, timeout?: number) {
+		this.message = message;
+		this.timeout = timeout;
+		Notice.instances.push({ message, timeout });
+	}
+
+	static reset(): void {
+		Notice.instances = [];
+	}
 }
 
 // AICODE-NOTE: Mock element factory for recursive DOM stub creation.
