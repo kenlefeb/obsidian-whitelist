@@ -187,6 +187,31 @@ describe("writeComplianceNotification", () => {
 		expect(parsed.justification).toBe("");
 		expect(typeof parsed.justification).toBe("string");
 	});
+
+	// AICODE-NOTE: TEST-011 tests [FR-005, UX-001] - adapter.write failure caught without throwing
+	it("TEST-011 catches adapter.write errors without throwing", async () => {
+		vi.spyOn(app.vault.adapter, "write").mockRejectedValue(new Error("disk full"));
+
+		// Must not throw
+		await expect(
+			writeComplianceNotification(app, "compliance", sampleViolations, "because"),
+		).resolves.toBeUndefined();
+	});
+
+	// AICODE-NOTE: TEST-012 tests [FR-005, UX-001] - Notice shown with ERROR_NOTICE_PREFIX on failure
+	it("TEST-012 displays Notice with ERROR_NOTICE_PREFIX when write fails", async () => {
+		const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+		vi.spyOn(app.vault.adapter, "write").mockRejectedValue(new Error("disk full"));
+
+		await writeComplianceNotification(app, "compliance", sampleViolations, "because");
+
+		expect(Notice.instances).toHaveLength(1);
+		expect(Notice.instances[0].message).toContain(ERROR_NOTICE_PREFIX);
+		expect(Notice.instances[0].message).toContain("disk full");
+		expect(consoleErrorSpy).toHaveBeenCalled();
+
+		consoleErrorSpy.mockRestore();
+	});
 });
 
 void ERROR_NOTICE_PREFIX;

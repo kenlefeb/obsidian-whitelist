@@ -95,11 +95,11 @@ TDD-structured implementation tasks for the is-notification-file feature. Writes
 - Constants: ERROR_NOTICE_PREFIX
 
 #### RED Phase
-- [ ] TEST-011 [US1] Test that `writeComplianceNotification` catches adapter.write errors without throwing in `tests/unit/notification-file.test.ts`
-- [ ] TEST-012 [US1] Test that `writeComplianceNotification` displays Notice with ERROR_NOTICE_PREFIX when write fails in `tests/unit/notification-file.test.ts`
+- [x] \1 [US1] Test that `writeComplianceNotification` catches adapter.write errors without throwing in `tests/unit/notification-file.test.ts`
+- [x] \1 [US1] Test that `writeComplianceNotification` displays Notice with ERROR_NOTICE_PREFIX when write fails in `tests/unit/notification-file.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-008 [US1] Wrap write operation in try/catch, show Notice with error message, log to console in `src/notification-file.ts`
+- [x] \1 [US1] Wrap write operation in try/catch, show Notice with error message, log to console in `src/notification-file.ts`
 
 ### TDD Cycle 2: Multiple Events
 **Coverage**:

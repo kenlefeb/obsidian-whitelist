@@ -7,7 +7,7 @@
  * I/O wrapper (writeComplianceNotification) for maximum testability per plan.md.
  */
 
-import type { App } from "obsidian";
+import { Notice, type App } from "obsidian";
 import type { Violation } from "./compliance.js";
 
 /**
@@ -87,27 +87,39 @@ export function buildNotificationFilename(date: Date): string {
  *
  * Creates the directory recursively if it does not exist (FR-004).
  * Handles write failures gracefully via Notice + console.error — never throws (FR-005, UX-001).
+ *
+ * @param app - Obsidian App instance (for vault.adapter access)
+ * @param directory - Vault-relative directory path
+ * @param violations - Violations from compliance scan
+ * @param justification - User justification from compliance modal
  */
 // AICODE-NOTE: IMPL-002 implements [FR-001, FR-006] - writes JSON event via adapter
 // AICODE-NOTE: IMPL-004 implements [FR-004] - recursive mkdir when directory missing
 // AICODE-NOTE: IMPL-006 implements [FR-003] - uses buildNotificationFilename for unique paths
-// AICODE-TODO: IMPL-008 (Phase 7) - error handling via try/catch + Notice
+// AICODE-NOTE: IMPL-008 implements [FR-005, UX-001] - try/catch wraps all adapter I/O,
+// failures produce a user-facing Notice + console.error but never throw to the caller
 export async function writeComplianceNotification(
 	app: App,
 	directory: string,
 	violations: Violation[],
 	justification: string,
 ): Promise<void> {
-	const adapter = app.vault.adapter;
+	try {
+		const adapter = app.vault.adapter;
 
-	const exists = await adapter.exists(directory);
-	if (!exists) {
-		await adapter.mkdir(directory);
+		const exists = await adapter.exists(directory);
+		if (!exists) {
+			await adapter.mkdir(directory);
+		}
+
+		const event = buildComplianceEvent(app.vault.getName(), violations, justification);
+		const filename = buildNotificationFilename(new Date(event.timestamp));
+		const path = `${directory}/${filename}`;
+		const content = JSON.stringify(event, null, JSON_INDENT);
+		await adapter.write(path, content);
+	} catch (err) {
+		const message = err instanceof Error ? err.message : String(err);
+		new Notice(ERROR_NOTICE_PREFIX + message);
+		console.error(err);
 	}
-
-	const event = buildComplianceEvent(app.vault.getName(), violations, justification);
-	const filename = buildNotificationFilename(new Date(event.timestamp));
-	const path = `${directory}/${filename}`;
-	const content = JSON.stringify(event, null, JSON_INDENT);
-	await adapter.write(path, content);
 }
