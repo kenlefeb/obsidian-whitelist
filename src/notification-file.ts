@@ -51,11 +51,6 @@ export interface ComplianceEvent {
 /**
  * Build a ComplianceEvent from its constituent parts.
  * Pure function — no I/O, no mocking required.
- *
- * @param vaultName - Obsidian vault name
- * @param violations - Violations detected by compliance scan
- * @param justification - User-provided justification (may be empty string)
- * @returns ComplianceEvent with current ISO timestamp
  */
 // AICODE-NOTE: IMPL-001 implements [FR-001, FR-002] - pure constructor for ComplianceEvent
 export function buildComplianceEvent(
@@ -91,18 +86,22 @@ export function buildNotificationFilename(_date: Date): string {
  *
  * Creates the directory recursively if it does not exist (FR-004).
  * Handles write failures gracefully via Notice + console.error — never throws (FR-005, UX-001).
- *
- * @param app - Obsidian App instance (for vault.adapter access)
- * @param directory - Vault-relative directory path
- * @param violations - Violations from compliance scan
- * @param justification - User justification from compliance modal
  */
-// AICODE-TODO: IMPL-002/IMPL-004/IMPL-006/IMPL-008 - implement in Phase 2, 4, 5, 7
+// AICODE-NOTE: IMPL-002 implements [FR-001, FR-006] - writes JSON event via adapter
+// AICODE-TODO: IMPL-004 (Phase 4) - recursive mkdir when directory missing
+// AICODE-TODO: IMPL-006 (Phase 5) - use buildNotificationFilename for unique paths
+// AICODE-TODO: IMPL-008 (Phase 7) - error handling via try/catch + Notice
 export async function writeComplianceNotification(
-	_app: App,
-	_directory: string,
-	_violations: Violation[],
-	_justification: string,
+	app: App,
+	directory: string,
+	violations: Violation[],
+	justification: string,
 ): Promise<void> {
-	throw new Error("Not implemented — see IMPL-002");
+	const event = buildComplianceEvent(app.vault.getName(), violations, justification);
+	// AICODE-NOTE: inline filename in IMPL-002 — replaced by buildNotificationFilename in IMPL-006
+	const sanitized = event.timestamp.replace(/[:.]/g, "-");
+	const filename = `${FILENAME_PREFIX}${sanitized}${FILENAME_EXTENSION}`;
+	const path = `${directory}/${filename}`;
+	const content = JSON.stringify(event, null, JSON_INDENT);
+	await app.vault.adapter.write(path, content);
 }

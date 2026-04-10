@@ -29,11 +29,11 @@ TDD-structured implementation tasks for the is-notification-file feature. Writes
 - Constants: FILENAME_PREFIX, FILENAME_EXTENSION, JSON_INDENT
 
 #### RED Phase
-- [ ] TEST-003 [US1] Test that `writeComplianceNotification` calls `adapter.write` with JSON content in `tests/unit/notification-file.test.ts`
-- [ ] TEST-004 [US1] Test that written JSON content has 2-space indentation (JSON_INDENT) in `tests/unit/notification-file.test.ts`
+- [x] \1 [US1] Test that `writeComplianceNotification` calls `adapter.write` with JSON content in `tests/unit/notification-file.test.ts`
+- [x] \1 [US1] Test that written JSON content has 2-space indentation (JSON_INDENT) in `tests/unit/notification-file.test.ts`
 
 #### GREEN Phase
-- [ ] IMPL-002 [US1] Implement `writeComplianceNotification(app, directory, violations, justification)` to build event and write to vault via adapter in `src/notification-file.ts`
+- [x] \1 [US1] Implement `writeComplianceNotification(app, directory, violations, justification)` to build event and write to vault via adapter in `src/notification-file.ts`
 
 ## Phase 3: User Story 2 - All Fields Populated (P1)
 

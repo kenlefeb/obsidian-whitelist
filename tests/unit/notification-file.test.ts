@@ -35,13 +35,11 @@ describe("buildComplianceEvent", () => {
 		expect(event.violations).toEqual(sampleViolations);
 		expect(event.justification).toBe("just cause");
 
-		// Timestamp is valid ISO and within call window
 		expect(typeof event.timestamp).toBe("string");
 		const parsed = Date.parse(event.timestamp);
 		expect(Number.isNaN(parsed)).toBe(false);
 		expect(parsed).toBeGreaterThanOrEqual(before);
 		expect(parsed).toBeLessThanOrEqual(after);
-		// ISO 8601 format
 		expect(event.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
 	});
 
@@ -52,14 +50,53 @@ describe("buildComplianceEvent", () => {
 	});
 });
 
+describe("writeComplianceNotification", () => {
+	let app: App;
+
+	beforeEach(() => {
+		app = new App();
+		Notice.reset();
+	});
+
+	// AICODE-NOTE: TEST-003 tests [FR-001, FR-006] - adapter.write is invoked with JSON content
+	it("TEST-003 calls adapter.write with JSON content", async () => {
+		const writeSpy = vi.spyOn(app.vault.adapter, "write").mockResolvedValue(undefined);
+
+		await writeComplianceNotification(app, "compliance", sampleViolations, "because");
+
+		expect(writeSpy).toHaveBeenCalledTimes(1);
+		const [path, content] = writeSpy.mock.calls[0];
+		expect(typeof path).toBe("string");
+		expect(path).toContain("compliance/");
+		expect(path).toContain(FILENAME_PREFIX);
+		expect(path).toContain(FILENAME_EXTENSION);
+
+		// Content is parseable JSON containing the event
+		const parsed = JSON.parse(content);
+		expect(parsed.vaultName).toBe("test-vault");
+		expect(parsed.justification).toBe("because");
+		expect(parsed.violations).toEqual(sampleViolations);
+	});
+
+	// AICODE-NOTE: TEST-004 tests [FR-001] - JSON content uses 2-space indentation constant
+	it("TEST-004 writes JSON content with 2-space indentation", async () => {
+		const writeSpy = vi.spyOn(app.vault.adapter, "write").mockResolvedValue(undefined);
+
+		await writeComplianceNotification(app, "compliance", sampleViolations, "because");
+
+		const [, content] = writeSpy.mock.calls[0];
+		// 2-space indentation means second line starts with "  \"" (two spaces + quote)
+		const lines = content.split("\n");
+		expect(lines[0]).toBe("{");
+		expect(lines[1]).toMatch(/^ {2}"/);
+		// Assert indent constant is the one in use
+		expect(JSON_INDENT).toBe(2);
+		// Re-serializing the parsed object with JSON_INDENT reproduces content exactly
+		const parsed = JSON.parse(content);
+		expect(JSON.stringify(parsed, null, JSON_INDENT)).toBe(content);
+	});
+});
+
 // AICODE-NOTE: Placeholders to keep unused imports available for later cycles.
 void buildNotificationFilename;
-void writeComplianceNotification;
-void FILENAME_PREFIX;
-void FILENAME_EXTENSION;
-void JSON_INDENT;
 void ERROR_NOTICE_PREFIX;
-void App;
-void Notice;
-void vi;
-void beforeEach;
