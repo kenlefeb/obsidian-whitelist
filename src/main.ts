@@ -38,6 +38,12 @@ export default class WhitelistPlugin extends Plugin {
 	// Populated after showComplianceModal resolves; null when compliant or modal not yet submitted.
 	justification: string | null = null;
 
+	// AICODE-NOTE: status-bar-indicator INIT-005 adds statusBarItem field per plan.md
+	// Implementation Notes. Tracks the current status bar HTMLElement so subsequent
+	// renders can detach it (avoids orphan DOM nodes on re-render).
+	// Null when no indicator is currently attached (compliant_hidden mode or pre-boot).
+	statusBarItem: HTMLElement | null = null;
+
 	async onload() {
 		console.debug("Loading plugin");
 		await this.loadSettings();
