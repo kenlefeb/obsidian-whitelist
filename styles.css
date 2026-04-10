@@ -1,8 +1,53 @@
-/*
+/* Compliance Modal Styles */
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.compliance-violation-list {
+	max-height: 240px;
+	overflow-y: auto;
+	margin: 1em 0;
+	padding: 0.5em;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-s);
+	background: var(--background-secondary);
+}
 
-If your plugin does not need CSS, delete this file.
+.compliance-violation-item {
+	display: flex;
+	flex-direction: column;
+	padding: 0.5em 0.25em;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
 
-*/
+.compliance-violation-item:last-child {
+	border-bottom: none;
+}
+
+.compliance-violation-name {
+	font-weight: var(--font-semibold);
+	color: var(--text-normal);
+}
+
+.compliance-violation-reason {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+	margin-top: 0.15em;
+}
+
+.compliance-justification-input {
+	width: 100%;
+	min-height: 5em;
+	margin: 0.5em 0 1em 0;
+	padding: 0.5em;
+	resize: vertical;
+	font-family: var(--font-interface);
+}
+
+.compliance-button-row {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 0.5em;
+}
+
+/* Hide default close button on blocking compliance modal */
+.modal.compliance-modal .modal-close-button {
+	display: none;
+}
