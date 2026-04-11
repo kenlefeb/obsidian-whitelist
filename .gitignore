@@ -1,5 +1,5 @@
 # vscode
-.vscode 
+.vscode
 
 # Intellij
 *.iml
@@ -20,3 +20,7 @@ data.json
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
+
+# Distribution zips produced by `npm run package` are build artifacts,
+# not source. They are re-created on demand and should never be committed.
+*.zip
