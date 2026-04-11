@@ -24,3 +24,8 @@ data.json
 # Distribution zips produced by `npm run package` are build artifacts,
 # not source. They are re-created on demand and should never be committed.
 *.zip
+
+# Local tooling state — vexp indexer and memsearch session memory.
+# These are per-machine runtime artifacts and should never be committed.
+.vexp/
+.memsearch/
